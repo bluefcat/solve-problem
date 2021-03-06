@@ -56,35 +56,30 @@ int pop_stack(Stack* target){
 
 int main(){
 	Stack* stack;
-	Stack* print_stack;
+	int arr[1000000] = { 0, }, answer[1000000] = { 0, };
 	int n;
 	scanf("%d", &n);
 	stack = create_stack(n);
-	print_stack = create_stack(n);
 
 	for(int i = 0; i < n; i ++){
-		int x;
-		scanf("%d", &x);
-		if(!is_empty(stack) && top_stack(stack) < x){
-			printf("[");
-			while(!is_empty(stack) && top_stack(stack) < x){
-				printf("%d ", top_stack(stack));
-				push_stack(print_stack, pop_stack(stack));
-			}
-			printf("] ");
-			while(!is_empty(print_stack)){
-				printf("%d ", x);
-				pop_stack(print_stack);
-			}
-		}
-
-		push_stack(stack, x);
-
+		scanf("%d", arr+i);
+		answer[i] = -1;
 	}
 
+	for(int i = 0; i < n; i ++){
+		while(!is_empty(stack) && arr[top_stack(stack)] < arr[i]){
+			answer[top_stack(stack)] = arr[i];
+			pop_stack(stack);
+		}
+		push_stack(stack, i);
+	}
+
+	
+	for(int i = 0; i < n; i ++){
+		printf("%d ", answer[i]);
+	}
 	printf("\n");
 
-	delete_stack(print_stack);
 	delete_stack(stack);
 	return 0;
 }

@@ -1,23 +1,19 @@
 #include <stdio.h>
 
-int mstrlen(char* p){
-	int result = 0;
-	
-	char* q = p;
-	while(*q){
-		q ++;
-		result ++;
-	}
-
-	return result;
-}
-
 int main(){
-	char str[1000000] = { 0, };	
-	scanf("%s", str);
+	int result = 0, l = 0;
+	char str[1000001] = { 0, };
+	
+	scanf("%[^\n]s", str);
+	
+	if(*str != ' ') result ++;
+	for(char* p = str; *p; p ++){
+		if(*p == ' ') result ++;
+		l ++;
+	}
+	if(*(str+l-1) == ' ') result --;
 
-	printf("%d\n", mstrlen(str));
-	printf("%s\n", str);
 
+	printf("%d\n", result);
 	return 0;
 }

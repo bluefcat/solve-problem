@@ -1,38 +1,55 @@
 #include <stdio.h>
-#define MQ 1000000
+#define M 1001
 
-typedef struct _pos{
+typedef struct pos_{
 	int x;
 	int y;
+	int t;
 } pos;
 
-int field[1000][1000];
-int visited[1000][1000];
+char box[M][M];
+int days;
 
-int s, e;
-pos queue[MQ];
+pos queue[M*M];
+int q_count, q_cursor, q_size;
+
+void ripe(int x, int y, int t){
+	if(box[y][x] != 0) return;
+	box[y][x] = 1;
+	queue[q_count ++] = (pos){x, y, t+1};
+	return;
+}
 
 int main(){
-	int m = 0, n = 0;
-	scnaf("%d %d", &m, &n);
-	
+	int m, n, result = 0;
+	scanf("%d %d", &m, &n);
+
 	for(int i = 0; i < n; i ++){
 		for(int j = 0; j < m; j ++){
-			scanf("%d", field[i][j]);
-			if(field[i][j] == 1){
-				queue[e].x = i; queue[e].y = j;
-				e ++
-			}
+			scanf("%hhd", box[i] + j);
+			if(box[i][j] == 1) queue[q_count++] = (pos){ j, i, days };	
+
 		}
 	}
-	
-	while(s != e){
-		int x = queue[s].x; int y = queue[s].y;
-		s = (s+1) % MQ;
-		
-		
 
+	while(q_cursor < q_count){
+		int x = queue[q_cursor].x, y = queue[q_cursor].y, t = queue[q_cursor].t;
+		
+		result = t > result? t: result;
+
+		if(0 <= x-1) ripe(x-1, y, t);
+		if(x+1 < m) ripe(x+1, y, t);
+		if(0 <= y-1) ripe(x, y-1, t);
+		if(y+1 < n) ripe(x, y+1, t);
+
+		q_cursor ++;
 	}
+
+	for(int i = 0; i < n; i ++){
+		for(int j = 0; j < m; j ++) if(box[i][j] == 0) result = -1; 
+	}
+
+	printf("%d\n", result);
 
 	return 0;
 }

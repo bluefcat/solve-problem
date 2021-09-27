@@ -1,28 +1,23 @@
 #include <stdio.h>
-#include <stdlib.h>
+#define MIN(X, Y) ((X) > (Y)? (Y): (X))
 
-int novel[501];
+int f(int* a, int x, int y, int n){
+	if(n == 2) return a[x] + a[y];
+	
+	int result = f(a, x, x+1, n-1) + f(a, x+2, y, n-1);
 
-int compare(const void* a, const void* b){
-	return *(int*)a - *(int*)b;
+	for(int i = x+2; i+1 <= y; i ++){
+		result = MIN(result, (f(a, x, i, n-1) + f(a, i+1, y, n-1)));
+	}
+
+	return result;
 }
 
 int main(){
-	int T = 0;
-
-	scanf("%d", &T);
+	int a[] = { 40, 30, 30, 50 };
 	
-	for(int t = 0; t < T; t ++){
-		int K = 0;
-		scanf("%d", &K);
-		
-		for(int i = 0; i < K; i ++) scanf("%d", novel + i);
-		
-		qsort(novel, sizeof(int), K, compare);
+	printf("%d\n", f(a, 0, 3, 4));
 
-		for(int i = 0; i < K; i ++) printf("%d ", novel[i]);
-		printf("\n");
-		
-	}
+
 	return 0;
 }

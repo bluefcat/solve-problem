@@ -1,23 +1,41 @@
 #include <stdio.h>
+#include <limits.h>
+
 #define MIN(X, Y) ((X) > (Y)? (Y): (X))
 
-int f(int* a, int x, int y, int n){
-	if(n == 2) return a[x] + a[y];
-	
-	int result = f(a, x, x+1, n-1) + f(a, x+2, y, n-1);
-
-	for(int i = x+2; i+1 <= y; i ++){
-		result = MIN(result, (f(a, x, i, n-1) + f(a, i+1, y, n-1)));
-	}
-
-	return result;
-}
+int cache[501][501];
+int cost[501];
+int sum[501];
 
 int main(){
-	int a[] = { 40, 30, 30, 50 };
-	
-	printf("%d\n", f(a, 0, 3, 4));
+	int T;
+	scanf("%d", &T);
 
+	for(int t = 0; t < T; t ++){
+		//input cost
+		int k = 0;
+		scanf("%d", &k);
+		
+		for(int i = 1; i <= k; i ++){
+			scanf("%d", cost+i);
+			sum[i] = sum[i-1] + cost[i];
+		}
+
+		for(int i = 1; i < k; i ++){
+			for(int x = 1; x + i <= k; x ++){
+				int y = x + i;
+				
+				cache[x][y] = INT_MAX;
+
+				for(int m = x; m < y; m ++){
+					cache[x][y] = MIN(cache[x][y], (cache[x][m] + cache[m+1][y] + sum[y] - sum[x-1]));
+				}
+
+			}
+		}
+
+		printf("%d\n", cache[1][k]);
+	}
 
 	return 0;
 }

@@ -4,50 +4,54 @@
 #define MAX(X, Y) ((X)>(Y)? (X): (Y))
 #define M 10001
 
-void revstr(char *str1)  
-{  
-    int i, len, temp;  
-    len = strlen(str1); 
-
-    for (i = 0; i < len/2; i++)  
-    {  
-        temp = str1[i];  
-        str1[i] = str1[len - i - 1];  
-        str1[len - i - 1] = temp;  
-    }  
-}  
-
 int main(){
-	
-	char a[M];
-	char b[M];
+	char a[M] = { 0, };
+	char b[M] = { 0, };
+	char c[M+1] = { 0, };
 
-	char result[M+1] = { 0, };
 	scanf("%s %s", a, b);
 
-	revstr(a);
-	revstr(b);
-
-	for(int i = 0; i < M; i ++){
-		result[i] += '0';
-
-		if(a[i] == 0 && b[i] == 0) break;
-
-		int am = MAX(a[i] -'0', 0);
-		int bm = MAX(b[i] -'0', 0);
-
-		int one_sum = am + bm;
-		
-		result[i] += (one_sum % 10);
-		result[i+1] += (one_sum / 10);
-
+	//long context, short context
+	char *p_long = a, *p_short= b;
+	int len_long = strlen(a), len_short = strlen(b);
+	
+	//swap
+	if(len_long < len_short){
+		char* p_tmp = p_long; p_long = p_short; p_short = p_tmp;
+		int len_tmp = len_long; len_long = len_short; len_short = len_tmp;
 	}
 
-	revstr(result);
+	int idx_sum = 0;
+	
+	int idx_long = len_long-1, idx_short= len_short-1;
 
-	if(result[0] == '0') printf("%s\n", result+1);
-	else printf("%s\n", result);
+	int n_sum = 0;
+	int carry = 0;
+	while(idx_long >= 0){
+		int n_long = p_long[idx_long] - '0';	
+		int n_short = (idx_short >= 0)? (p_short[idx_short] - '0'): 0;
+		
+		n_sum = (n_long + n_short + carry) % 10;
+		carry = (n_long + n_short + carry) / 10;
+		
+		c[idx_long+1] += n_sum;
+		
+		idx_long -= 1;
+		idx_short -= 1;
 
+		idx_sum ++;
+		if(idx_long < 0 && carry != 0) idx_sum ++;
+	}
+	c[0] = carry;
+
+	if(c[0] == 0){
+		for(int i = 0; i <= idx_sum; i ++) c[i-1] = c[i];
+	}
+
+	for(int i = 0; i < idx_sum; i ++){
+		printf("%d", c[i]);
+	}
+	printf("\n");
 
 	return 0;
 }

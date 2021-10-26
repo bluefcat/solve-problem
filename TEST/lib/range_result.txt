@@ -1,0 +1,40 @@
+-------
+value name: T
+lower bound: 1, upper bound: 3
+[T] > [P] > [Q] > 
+===
+value name: T
+lower bound: 1, upper bound: 3
+value name: P
+lower bound: 3, upper bound: 5
+value name: Q
+lower bound: 3, upper bound: 5
+===
+-------
+-------
+value name: P
+lower bound: 3, upper bound: 5
+[P] > [X] > 
+===
+value name: P
+lower bound: 3, upper bound: 5
+value name: X
+lower bound: 1, upper bound: 5
+===
+-------
+-------
+value name: X
+lower bound: 1, upper bound: 5
+[X] > [A] > [B] > [C] > 
+===
+value name: X
+lower bound: 1, upper bound: 5
+value name: A
+lower bound: 1, upper bound: 10
+value name: B
+lower bound: 1, upper bound: 10
+value name: C
+lower bound: 1, upper bound: 10
+===
+-------
+Generate Data with Token

@@ -1,26 +1,50 @@
 #include <stdio.h>
-#define MIN(X, Y) (((X) > (Y))? (Y): (X))
-#define ABS(X) (((X) > 0)? (X): -(X))
+#define QMAX 100001
+
+int queue[QMAX];
+int head, tail;
 
 int visited[100001];
-int n, k, result = -1;
+int n, p;
 
-void bfs(int cur, int count){
-	if(cur < 0 || (k<<1) <= cur) return;
-	if(visited[cur] != 0 && visited[cur] <= count) return;
-	visited[cur] = count;
+int dx[] = { 1, -1, 2 };
 
-	bfs(cur<<1, count+1);
-	bfs(cur-1, count+1);
-	bfs(cur+1, count+1);
-}
+int dfs(int s){
+	queue[tail] = s;
+	tail = (tail + 1)%QMAX;
+	visited[s] = 1;
+
+	while(head != tail){
+		s = queue[head];
+		head = (head + 1)%QMAX;
+		
+		if(s == p) return visited[s] - 1;
+
+		for(int i = 0; i < 3; i ++){
+			int ns;
+			ns = s + dx[i];
+			if(i == 2) ns = s << 1;
+			
+			if(ns < 0 || 100001 <= ns) continue;
+			if(visited[ns]) continue;
+
+			visited[ns] = visited[s] + 1;
+
+			queue[tail] = ns;
+			tail = (tail + 1)%QMAX;
+		}
+	}
+
+	return 0;
+
+};
 
 int main(){
-	scanf("%d %d", &n, &k);
+	scanf("%d %d", &n, &p);
 		
-	bfs(n, 0);
+	int result = dfs(n);
 
-	printf("%d\n", visited[k]);
+	printf("%d\n", result);
 
 	return 0;
 }

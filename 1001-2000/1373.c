@@ -2,46 +2,33 @@
 #include <string.h>
 
 int main(){
-	char result[1000001] = { 0, };
-	char binary[1000001] = { 0, };
-	int result_length = 0;
-	int length = 0;
-	char c = 0;
-
-	while(scanf("%1c", &c) && c != '\n'){
-		binary[length++] = c;
-	}
+	char string[1000001] = { 0, };
+	scanf("%s", string);
 	
-	for(int i = 0; i < length >> 1; i ++){
-		char tmp = binary[i];
-		binary[i] = binary[length - (i+1)];
-		binary[length - (i+1)] = tmp;
-	}
-
-	for(int i = 0; 3*i+2 < length; i ++){
-
-		int a = 3*i;
-		int b = 3*i+1;
-		int c = 3*i+2;
+	int len = strlen(string);
+	int padding = len % 3;
 	
-		int p = (binary[a]-'0')+(binary[b]-'0')*2+(binary[c]-'0')*4;
-		result[result_length ++] = p + '0';
-	}
-
-	int p = 0;
-	for(int i = 0; i < length % 3; i ++){
-		int t = (length/3)*3;
+	int result = 0;
+	for(int i = 0; i < padding; i ++){
+		int tmp = padding - (i+1);
 		
-		p += (binary[t]-'0') * (1 << i);
+		result += (string[i]-'0') * (1 << tmp);
+		
 	}
-	if(p) result[result_length++] = p +'0';
 	
-	for(int i =0; i < result_length >> 1; i ++){
-		char tmp = result[i];
-		result[i] = result[result_length-(i+1)];
-		result[result_length-(i+1)] = tmp;
+	if(result) printf("%d", result);
+
+	for(int i = padding; i < len; i += 3){
+		int a = string[i+0]-'0';
+		int b = string[i+1]-'0';
+		int c = string[i+2]-'0';
+
+		printf("%d", a*4+b*2+c);
 	}
 
-	printf("%s\n", result);
+	if(len == 1 && string[0] == '0') printf("0");
+
+	printf("\n");
+
 	return 0;
 }

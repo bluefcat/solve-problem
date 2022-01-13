@@ -1,31 +1,26 @@
 #include <stdio.h>
 
+int app[100001][2];
+
 int main(){
-	int T, cache[100001][2] = { 0, };
-	
-	scanf("%d", &T);
+	int T;
 
-	while(T--){
-		int n = 0, result = 0;
-		scanf("%d", &n);
+	int n = 0;
+	scanf("%d", &n);
 
-		for(int i = 0; i < n; i ++) scanf("%d %d", cache[i], cache[i]+1);
+	for(int i = 0; i < n; i ++) scanf("%d %d", app[i]+0, app[i]+1);
 
-		for(int i = 0; i < n; i ++){
-			for(int j = 0; j < n; j ++){
-				if(cache[i][0] < cache[j][0] && cache[i][1] < cache[j][1]){
-					break;
-				}
-				else{
-					result ++;
-					break;
-				}
-			}
+	for(int i = 0; i < n; i ++){
+		for(int j = 0; j < n; j ++){
+			if(i == j) continue;
+
+			printf("[[%d], %d], (%d, %d) < (%d, %d) %d\n", i, j, app[i][0], app[i][1], app[j][0], app[j][1],
+					app[i][0] > app[j][0] || app[i][1] > app[j][1]);
 		}
-		
-		printf("[%d]\n", result);
-		
+
+		printf("-----\n");
 	}
+
 
 
 	return 0;

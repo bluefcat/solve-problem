@@ -1,57 +1,67 @@
 #include <stdio.h>
 
-#define PARENT(X) ((X-1)>>1)
-#define LCHILD(X) (2*(X)+1)
-#define RCHILD(X) (2*(X)+2)
+long long number[1000002];
+long long map[4000005];
 
-int number[1000001];
-int cache[1000001];
-
-int init(int start, int end, int n){
-	if(start+1 >= end) return cache[n] = number[start];
-	
-	int mid = 1+(start + end) >> 1;
-
-	return cache[n] = init(start, mid, LCHILD(n)) + init(mid, end, RCHILD(n));
-}
-
-int sum(int start, int end, int n, int l, int r){
-	if(l > end || r < start) return 0;
-	if(l <= start && end <= r) return cache[n];
+long long build(int start, int end, int node){
+	if(start == end) return map[node] = number[start];
 
 	int mid = (start + end) >> 1;
-	return sum(start, mid, LCHILD(n), l, r) + sum(mid+1, end, RCHILD(n), l, r);
+
+	return map[node] = build(start, mid, node<<1) + build(mid+1, end, (node<<1)+1);
 }
 
-void update(int start, int end, int n, int i, int d){
-	if(i < start || i > end) return;
-	cache[n] += d;
+long long sum(int start, int end, int node, int left, int right){
+	if(right < start || end < left) return 0;
+
+	if(left <= start && end <= right) return map[node];
+
+	int mid = (start + end) >> 1;
+
+	return sum(start, mid, node<<1, left, right) + sum(mid+1, end, (node<<1)+1, left, right);
+}
+
+void update(int start, int end, int node, int index, long long diff){
+	if(index < start || index > end) return;
+
+	map[node] += diff;
 	if(start == end) return;
 
 	int mid = (start + end) >> 1;
-	update(start, mid, LCHILD(n), i, d);
-	update(mid+1, end, RCHILD(n), i, d);
+
+	update(start, mid, node << 1, index, diff);
+	update(mid+1, end, (node << 1) + 1, index, diff);
 }
+
+
 
 int main(){
 	int n, m, k;
+
 	scanf("%d %d %d", &n, &m, &k);
+
+	long long tmp = 0;
+	for(int i = 0; i < n; i ++){
+		scanf("%lld", number+i);
+	}
 	
-	for(int i = 0; i < n; i ++) scanf("%d", number+i);
-	init(0, n, 0);
+	build(0, n-1, 1);
 
-	for(int i = 0; i < m+k; i ++){ // m+k
-		int a, b, c;
-		scanf("%d %d %d", &a, &b, &c);
-
-		if(a == 1){
-			update(0, n-1, 0, b, c-1);
+	for(int i = 0; i < m+k; i ++){
+		long long a, b, c;
+		scanf("%lld %lld %lld", &a, &b, &c);
+		
+		switch(a){
+			case 1:{
+				update(0, n-1, 1, b-1, c-number[b-1]);
+				number[b-1] = c;
+				break;
+			}
+			case 2:{
+				printf("%lld\n", sum(0, n-1, 1, b-1, c-1));
+				break;
+			}
 		}
-		else if(a == 2){
-			int result = sum(0, n-1, 0, b, c-1);
-			printf("[%d]\n", result);
-		}
-
 	}
 
 	return 0;

@@ -312,6 +312,10 @@ TOKEN* create_token(const char* file_name){
 	return result;
 }
 
+int generate_chain_(TOKEN* header){
+
+}
+
 int generate_token(TOKEN* token){
 	printf("Generate Data with Token\n");
 	return 0;

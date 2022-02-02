@@ -14,6 +14,5 @@ int main(){
 	
 	printf("%d\n", (int)result/5);
 	
-
 	return 0;
 }

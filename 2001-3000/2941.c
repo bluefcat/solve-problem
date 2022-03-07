@@ -1,32 +1,36 @@
 #include <stdio.h>
 
+char alphabet[8][4] = { "c=", "c-", "dz=", "d-", "lj", "nj", "s=", "z=" };
+
+int mstrlen(char* p){
+	int result = 0;
+	while(*p){
+		p ++;
+		result ++;
+	}
+	return result;
+}
+
 int is_croatia(char* p){
-	int result = 1;
-
-	char alpha[12][3] = {"c=", "c-", "dz=", "d-", "lj", "nj", "s=", "z=", "l", "n", "s", "z"};
-	int cand[12] = { 0, };
-
-	for(int i = 0; i < 12; i ++) cand[i] = 1;
-
-	int idx = 0;
-	while(1){
-		for(int i = 0; i < 12; i ++){
-			if(cand[i] == 0) continue;
-			cand[i] = (int)(alpha[i][idx] == *(p+idx));
-		}
-
-		idx ++;
+	int idx = -1;
+	
+	for(int i = 0; i < 8; i ++){
 		
-		int cnt = 0;
-		for(int i = 0; i < 12; i ++) cnt += cand[i];
+		char* tmp = p;
+		char* alp = alphabet[i];
+
+		while(*tmp && *alp){
+			if(*tmp != *alp) goto NO_MATCH;
+			tmp ++; alp ++;
+		}	
 		
-		if(cnt <= 1 || idx > 2){
-			if(cnt == 1) result += idx;
-			break;
-		}
+		if(!(*alp)) idx = i;
+
+		NO_MATCH:
+			continue;
 	}
 
-	return result;
+	return idx;
 }
 
 int main(){
@@ -34,15 +38,20 @@ int main(){
 	char string[101] = { 0, };
 
 	scanf("%s", string);
-
-	char* p = string;
 	
+	char* p = string;
+
 	while(*p){
-		int next = is_croatia(p);
+		int next = 1;
+		
+		int idx = is_croatia(p);
+		if(idx != -1){
+			next = mstrlen(alphabet[idx]);
+		}
 		result ++;
 		p += next;
 	}
-
+	
 	printf("%d\n", result);
 
 	return 0;

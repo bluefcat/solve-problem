@@ -37,6 +37,22 @@ typedef struct _CHAIN_TOKEN{
 	struct _CHAIN_TOKEN*	child_header;
 } CHAIN_TOKEN, TOKEN; 
 
+//genrated range function
+
+typedef struct _DATA_TOKEN{
+	char*					value_name;
+	int						value;
+} DATA_TOKEN;
+
+typedef struct _CHAIN_DATA_TOKEN{
+	DATA_TOKEN*					data_token;
+	struct _CHAIN_DATA_TOKEN*	next_token;
+
+	struct _CHAIN_DATA_TOKEN*	child_header;
+} CHAIN_DATA_TOKEN, RESULT;
+
+
+
 void print_range_token(RANGE_TOKEN* result);
 void print_chain_token(CHAIN_TOKEN* result);
 void print_token(TOKEN* result);

@@ -1,0 +1,30 @@
+{
+    "problem": {
+        "ext":  "in",
+        "path": "problem/in"
+    },
+    "answer": {
+        "ext":  "result",
+        "path": "problem/result"
+    },
+    "compiler": {
+        "c":    {"program": "gcc", "option": "-O2 -Wall -lm -static -std=gnu99"},
+        "cpp":  {"program": "g++", "option": "-O2 -Wall -lm -static -std=gnu++17"}
+    },
+
+    "user": {
+        "path": "usercode/",
+        "result": {
+            "ext" : "result"
+        },
+        "log":{
+            "ext": "log"
+        },
+        "out":{
+            "ext": "out"
+        }
+    },
+    "test": {
+        "path": "testcode/"
+    }
+}

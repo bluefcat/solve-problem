@@ -1,11 +1,11 @@
 #include <stdio.h>
 #define NONE -1
 
-char stack[101];
+char stack[151];
 int head;
 
-char string[101];
-char result[101];
+char string[151];
+char result[151];
 int cnt;
 
 char oper[4] = { '+', '-', '*', '/' };
@@ -28,11 +28,14 @@ int main(){
 
 	while(*p){
 		if(is_oper(*p) != NONE){
-			if(head != 0){
+			if(head > 0){
 				int cand = is_oper(*p);
-				int in = is_oper(stack[head-1]);
 				
-				if(in >= cand) result[cnt++] = stack[--head];
+				while(head > 0){
+					int top = is_oper(stack[head-1]);	
+					if(top >= cand) result[cnt++] = stack[--head];
+					else break;
+				}
 				stack[head++] = *p;
 
 			}
@@ -49,10 +52,10 @@ int main(){
 		}
 		else result[cnt++] = *p;
 		
-		for(int i = 0; i < head; i ++){
-			printf("%c\t", stack[i]);
-		}
-		printf("\n");
+		//for(int i = 0; i < head; i ++){
+		//	printf("%c %d\t", stack[i], is_oper(stack[i]));
+		//}
+		//printf("\n");
 
 		p ++;
 	}
@@ -60,6 +63,8 @@ int main(){
 	while(head >= 0){
 		result[cnt++] = stack[--head];
 	}
+	
+	result[cnt] = 0;
 
 	printf("%s\n", result);
 	

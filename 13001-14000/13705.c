@@ -1,22 +1,25 @@
 #include <stdio.h>
 #include <math.h>
 
-double function(double a, double b, double c, double x){
+long double function(long double a, long double b, long double c, long double x){
 	return a * x + b * sin(x) - c;
 }
 
-double bisection(
-	double a, double b, double c,
-	double(*f)(double, double, double, double),
-	double allowrance){
+long double bisection(
+	long double a, long double b, long double c,
+	long double(*f)(long double, long double, long double, long double),
+	long double allowrance){
 	
-	double left = c / a - 1.f;
-	double right = c / a + 1.f;
-	double mid = (left + right) / 2.f;	
+	long double left = c / a - 1.f;
+	long double right = c / a + 1.f;
+	long double mid = (left + right) / 2.f;	
 
 	while(right - left > allowrance){
 		mid = (left + right) / 2.f;
-		double t = f(a, b, c, mid);
+		long double t = f(a, b, c, mid);
+		if(mid-allowrance <= left && left <= mid+allowrance) return left;
+		if(mid-allowrance <= right && right <= mid+allowrance) return mid;
+
 		if(t > 0){
 			right = mid;
 		}
@@ -33,15 +36,15 @@ double bisection(
 }
 
 int main(){
-	double a, b, c;
+	long double a, b, c;
 	
-	scanf("%lf %lf %lf", &a, &b, &c);
+	scanf("%Lf %Lf %Lf", &a, &b, &c);
 	
-	double result = bisection(a, b, c, function, pow(10, -14));
+	long double result = bisection(a, b, c, function, pow(10, -20));
 	
 	result = round(result * 1000000) / 1000000;
 
-	printf("%.6lf\n", result);
+	printf("%.6Lf\n", result);
 
 	return 0;
 }

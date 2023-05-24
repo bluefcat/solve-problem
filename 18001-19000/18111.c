@@ -36,8 +36,12 @@ int main(){
 
 		if(r[0] + b >= r[1]){
 			int time = r[0]*2 + r[1];
-			
-			if(result > time){
+			if(result == time){
+				if(height < t){
+					height = t;
+				}
+			}
+			else if(result > time){
 				result = time;
 				height = t;
 			}

@@ -34,7 +34,8 @@ int main(){
             }
             flag = 1;
         }
-    }while(flag);
+    	printf("%d\n", flag);
+	}while(flag);
 
     
     printf("%ld\n", result);

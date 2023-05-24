@@ -10,6 +10,7 @@ int empty();
 
 void push(int x){
 	queue[tail++] = x;
+	length ++;
 	tail %= QMAX;
 }
 
@@ -18,6 +19,7 @@ int pop(){
 
 	int result = queue[head];
 	head = (head+1)%QMAX;
+	length --;
 	return result;
 }
 
@@ -48,9 +50,8 @@ int main(){
 	for(int i = 0; i < n; i ++){
 		char oper[15] = { 0, };
 
-		scanf("%s", oper);
-
-		if(strcmp(oper, "push")){
+		scanf("%s[^ ]", oper);
+		if(strcmp(oper, "push") == 0){
 			int tmp = 0;
 			scanf("%d", &tmp);
 			push(tmp);

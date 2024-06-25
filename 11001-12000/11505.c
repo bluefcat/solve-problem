@@ -7,7 +7,7 @@
 #define ll long long
 
 ll arr[N];
-ll tree[2*N+1];
+ll tree[3*N+1];
 
 ll pow_mod(ll base, ll x){
 	ll result = 1;
@@ -33,17 +33,16 @@ ll product(ll sidx, ll eidx, ll left, ll right, ll idx){
 		    product(midx+1, eidx, left, right, RIGHT(idx))) % MOD;
 }
 
-void update(ll sidx, ll eidx, ll p, ll n, ll idx){
-	if(!(sidx <= p && p <= eidx)) return;
-	ll rev = pow_mod(arr[p], MOD-2) % MOD;
-	tree[idx] = ((tree[idx] % MOD) * rev) % MOD;
-	tree[idx] = ((tree[idx] % MOD) * n) % MOD;
-
-	if(sidx == eidx) return;
-
+ll update(ll sidx, ll eidx, ll p, ll n, ll idx){
+	if(!(sidx <= p && p <= eidx)) return tree[idx];
+	if(sidx == eidx){ //sidx == p
+		return tree[idx] = n;
+	}	
 	ll midx = (sidx+eidx) >> 1;
-	update(sidx, midx, p, n, LEFT(idx));
-	update(midx+1, eidx, p, n, RIGHT(idx));
+	ll left = update(sidx, midx, p, n, LEFT(idx));
+	ll right = update(midx+1, eidx, p, n, RIGHT(idx));
+
+	return tree[idx] = (left * right) % MOD;
 }
 
 int main(){

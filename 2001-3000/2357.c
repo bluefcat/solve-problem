@@ -1,10 +1,17 @@
 #include <stdio.h>
 #include <limits.h>
+#define N 100001
+#define LEFT(X) (((X) << 1) + 1)
+#define RIGHT(X) (((X) << 1) + 2)
 
-int n, m;
-int arr[100002];
-int max_tree[100003];
-int min_tree[100003];
+int arr[N];
+
+typedef struct _Result{
+	int min_result;
+	int max_result;
+} Result;
+
+Result tree[3*N+1];
 
 static inline int my_max(int x, int y){
 	return ((x) > (y)? (x): (y));
@@ -14,42 +21,65 @@ static inline int my_min(int x, int y){
 	return ((x) < (y)? (x): (y));
 }
 
-int max_init(int start, int end, int node){
-	if(start == end) return max_tree[node] = arr[start];
-	int mid = (start + end) >> 1;
-	return max_tree[node] = my_max(max_init(start, mid, node << 1), max_init(mid+1, end, (node << 1) + 1));
+Result* init(int sidx, int eidx, int idx){
+	if(sidx == eidx){
+		tree[idx].max_result = arr[sidx];
+		tree[idx].min_result = arr[sidx];
+		return tree + idx;
+	} 
+	int midx = (sidx + eidx) >> 1;	
+	Result* left = init(sidx, midx, LEFT(idx));
+	Result* right = init(midx+1, eidx, RIGHT(idx));
+	
+	tree[idx].max_result = my_max(
+			left->max_result,
+			right->max_result
+			);
+
+	tree[idx].min_result = my_min(
+			left->min_result,
+			right->min_result
+			);
+	
+	return tree + idx;
 }
 
-int min_init(int start, int end, int node){
-	if(start == end) return min_tree[node] = arr[start];
-	int mid = (start + end) >> 1;
-	return min_tree[node] = my_min(min_init(start, mid, node << 1), min_init(mid+1, end, (node << 1) + 1));
+Result query(int sidx, int eidx, int left, int right, int idx){
+	if(right < sidx || eidx < left){
+		Result result;
+		result.max_result = INT_MIN;
+		result.min_result = INT_MAX;
+		return result;
+	}
+
+	if(left <= sidx && eidx <= right) return tree[idx];
+	
+	int midx = (sidx + eidx) >> 1;
+
+	Result l = query(sidx, midx, left, right, LEFT(idx));
+	Result r = query(midx + 1, eidx, left, right, RIGHT(idx));
+	
+	Result result;
+	result.max_result = my_max(l.max_result, r.max_result);
+	result.min_result = my_min(l.min_result, r.min_result);
+	return result;
 }
 
-int max_find(int start, int end, int node, int left, int right){
-	if(end < left || right < start) return INT_MIN;
-
-	int mid = (start + end) >> 1;
-
-	return my_max(max_find(start, mid, node << 1, left, right),
-				  max_find(mid+1, end, (node << 1) + 1, left, right));
-}
 
 int main(){
+	int n, m;
 	scanf("%d %d", &n, &m);
 	for(int i = 0; i < n; i ++){
 		scanf("%d", arr + i);
 	}
-
-	max_init(0, n-1, 1);
-	min_init(0, n-1, 1);
+	
+	init(0, n-1, 0);
 
 	for(int t = 0; t < m; t ++){
 		int a, b;
 		scanf("%d %d", &a, &b);
-		int mx = max_find(0, n-1, 1, a, b);
-
-		printf("[%d]\n", mx);
+		Result result = query(0, n-1, a-1, b-1, 0);
+		printf("%d %d\n", result.min_result, result.max_result);
 	}
 
 	return 0;

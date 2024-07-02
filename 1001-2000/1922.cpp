@@ -20,23 +20,21 @@ int find(std::map<int, int>& u, int x){
 void combine(
 	std::map<int, int>& u,
 	int x,
-	int y
+	int y,
+	int cost,
+	int& result
 ){
 	int px = find(u, x);
 	int py = find(u, y);
+	if(px == py) return;
+	
+	result += cost;
+	
 	if(px < py){
 		u[py] = px;
 		return;
 	}
 	u[px] = py;
-}
-
-static inline bool is_combine(
-	std::map<int, int>& u,
-	int x,
-	int y
-){
-	return u[x] == u[y];
 }
 
 int main(){
@@ -67,10 +65,7 @@ int main(){
 		int x = std::get<0>(t);
 		int y = std::get<1>(t);
 		int cost = std::get<2>(t);
-		if(!is_combine(u, x, y)){
-			result += cost;
-			combine(u, x, y);
-		}
+		combine(u, x, y, cost, result);
 		candidate.pop();
 	}
 	printf("%d\n", result);

@@ -8,7 +8,8 @@ using std::priority_queue;
 
 struct Compare{
 	bool operator()(int x, int y){
-		return std::abs(x) > std::abs(y) || x > y;
+		return std::abs(x) > std::abs(y) ||
+			(std::abs(x) == std::abs(y) && x > y);
 	}
 };
 

@@ -5,10 +5,10 @@
 constexpr int N = 57;
 
 int main(){
-	int W, H;
+	int W, H, K;
 	bool board[N][N] = { 0, };
 	int cache[2][N][N] = { 0, };
-	scanf("%d %d", &H, &W);
+	scanf("%d %d %d", &H, &W, &K);
 	
 	for(int i = 0; i < H; i ++){
 		for(int j = 0; j < W; j ++){
@@ -45,12 +45,12 @@ int main(){
 
 	int result = INT_MAX;
 	for(int c = 0; c <= 1; c ++){
-		for(int i = 8; i < H+1; i ++){
-			for(int j = 8; j < W+1; j ++){
+		for(int i = K; i < H+1; i ++){
+			for(int j = K; j < W+1; j ++){
 				result = std::min(
 					result,
 					cache[c][i][j] - 
-					(cache[c][i][j-8] + cache[c][i-8][j] - cache[c][i-8][j-8])
+					(cache[c][i][j-K] + cache[c][i-K][j] - cache[c][i-K][j-K])
 				);
 			}
 		}

@@ -11,20 +11,10 @@ using std::vector;
 using std::unordered_map;
 using std::priority_queue;
 
+using ll=long long;
 
 constexpr int N = 1000;
 constexpr int L = 1000000;
-
-template<>
-struct std::hash<pair<int, int>>{
-	std::size_t operator()(
-		const pair<int, int>& x
-	) const {
-		return std::hash<int>()(
-			(x.first << 10) + x.second
-		);
-	}
-};
 
 struct TupleGreater{
 	bool operator()(
@@ -38,8 +28,8 @@ struct TupleGreater{
 };
 
 double get_distance(
-	const pair<int, int>& x,
-	const pair<int, int>& y
+	const pair<ll, ll>& x,
+	const pair<ll, ll>& y
 ){
 	return std::sqrt(
 		std::pow(x.first-y.first, 2) + 
@@ -63,25 +53,25 @@ bool combine(
 	auto py = find(parent, y);
 
 	if(px == py) return false;
-
-	auto t = std::min(px, py);
 	
-	parent[x] = t;
-	parent[y] = t;
-	
+	if(px < py){
+		parent[py] = px;
+		return true;
+	}
+	parent[px] = py;
 	return true;
 }
 
 int main(){
 	int n, m;
-	vector<pair<int, int>> p{};
+	vector<pair<ll, ll>> p{};
 	unordered_map<int, int> parent{};
 
 	scanf("%d %d", &n, &m);
 
 	for(int i = 0; i < n; i ++){
-		int x, y;
-		scanf("%d %d", &x, &y);
+		ll x, y;
+		scanf("%lld %lld", &x, &y);
 		p.push_back({x, y});
 		parent[i] = i;
 	}
@@ -99,7 +89,8 @@ int main(){
 
 	for(int i = 0; i < n; i ++){
 		for(int j = 0; j < n; j ++){
-			if(i == j) continue;
+			if(find(parent, i) == find(parent, j)) 
+				continue;
 			q.push({i, j, get_distance(p[i], p[j])});
 		}
 	}
@@ -112,9 +103,9 @@ int main(){
 			continue;
 		}
 		result += d;
+		printf("(%d-%d) %lf %lf\n", x, y, d, result);
 		q.pop();
 	}
-	printf("%.2lf\n", result);
-
+	printf("%.2lf\n", round(result*100)/100);
 	return 0;
 };

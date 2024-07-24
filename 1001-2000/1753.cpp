@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <queue>
 
-#define N 200001
+#define N 200002
 
 struct pair_less{
 	bool operator()(
@@ -26,7 +26,7 @@ int main(){
 	> q;	
 	
 	int result[N] = { 0, };
-	for(int i = 2; i < N; i ++) result[i] = -1;
+	for(int i = 0; i < N; i ++) result[i] = -1;
 
 	int v, e, k;
 	scanf("%d %d %d", &v, &e, &k);
@@ -36,7 +36,7 @@ int main(){
 		if(graph[x][y]) graph[x][y] = std::min(cost, graph[x][y]);
 		else graph[x][y] = cost;
 	}
-
+	result[k] = 0;
 	q.push(std::make_pair(k, 0));
 
 	while(!q.empty()){

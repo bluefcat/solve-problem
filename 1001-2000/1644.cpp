@@ -1,6 +1,6 @@
 #include <cstdio>
 #include <vector>
-#define N 4000001
+#define N 5000001
 
 void make_prime(std::vector<int>& prime){
 	bool prime_table[N] = { false, };

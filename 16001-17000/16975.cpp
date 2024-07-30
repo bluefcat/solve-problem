@@ -34,7 +34,7 @@ void update(ll tree[][2], int l, int r, int s, int e, int k, int idx){
 		tree[idx][1] += k;	
 		return;
 	}
-	if(l <= s && e <= r){
+	if(s <= l && r <= e){
 		tree[idx][1] += k;
 		return;
 	}

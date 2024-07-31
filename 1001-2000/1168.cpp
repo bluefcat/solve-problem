@@ -26,9 +26,7 @@ int sum(int* tree, int l, int r, int s, int e, int idx){
 }
 
 int query(int* tree, int n, int l, int r, int k){
-	int s = sum(tree, 1, n, l, r, 0);
-	if(s < k) return query(tree, n, 1, n, k - s);
-	if(l == r) if(k == 1) return l;
+	if(l == r && k == 1) return l;
 
 	int m = (l + r) >> 1;
 	int ls = sum(tree, 1, n, l, m, 0);
@@ -55,7 +53,14 @@ int main(){
 	init(tree, arr, 1, n, 0);
 	printf("<");
 	for(int i = 0; i < n; i ++){
-		int x = query(tree, n, p, n, k);
+		int s = sum(tree, 1, n, p, n, 0); 
+		int ts = sum(tree, 1, n, 1, n, 0);
+		int a = p, kk = k;
+		if(k > s){
+			kk = (k-s)%ts; a = 1;
+			if(kk == 0) kk = ts;
+		}
+		int x = query(tree, n, a, n, kk);
 		printf("%d", x);
 		if(i != n-1) printf(", ");
 		p = x;

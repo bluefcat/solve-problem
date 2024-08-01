@@ -1,34 +1,39 @@
 #include <cstdio>
-#define N 100001
-static inline int get_left(int x){
-	return (x << 1) + 1;
-}
+#include <array>
+using std::array;
 
-static inline int get_right(int x){
-	return (x << 1) + 2;
-}
+constexpr int N = 100001;
 
-
-void preorder(int* arr, int n, int idx){
-	if(n <= idx) return;
-	printf("%d ", arr[idx]);
-	preorder(arr, n, get_left(idx));
-	preorder(arr, n, get_right(idx));
-}
-
-void postorder(int* arr, int n, int idx){
-	if(n <= idx) return;
-	postorder(arr, n, get_left(idx));
-	postorder(arr, n, get_right(idx));
-	scanf("%d", arr+idx);
+template<typename T>
+void print(
+	T& pos, T& post_order,
+	int s, int l, int r
+){
+	int base = post_order[r];
+	printf("%d ", base);
+	if(l == r) return;	
+	int idx = pos[base] - s;
+	if(l <= l+idx-1)
+		print(pos, post_order, s, l, l+idx-1);
+	if(l+idx <= r-1)
+		print(pos, post_order, s+idx+1, l+idx, r-1);
 }
 
 int main(){
-	int arr[N] = { 0, }; 
-	
-	int n = 0;
+	int n;
+	array<int, N> position;
+	array<int, N> post_order;
 	scanf("%d", &n);
-	int tmp; for(int i = 0; i < n; i ++) scanf("%d", &tmp);
-	postorder(arr, n, 0);
-	preorder(arr, n, 0); printf("\n");
+	for(int i = 0; i < n; i ++) {
+		int p;
+		scanf("%d", &p);
+		position[p] = i;
+	}
+	
+	for(int i = 0; i < n; i ++)
+		scanf("%d", post_order.begin()+i);
+	
+	print(position, post_order, 0, 0, n-1);
+	printf("\n");
+	return 0;
 }

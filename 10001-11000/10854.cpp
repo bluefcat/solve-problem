@@ -85,6 +85,11 @@ int main(){
 	scanf("%llu", &n);
 	vector<ull> v{};
 	
+	if(n == 1){
+		printf("1\n");
+		return 0;
+	}
+
 	while(n > 1){
 		ull p = pollard_rho(n);
 		v.push_back(p);

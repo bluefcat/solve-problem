@@ -2,17 +2,19 @@
 #include <cstdio>
 #include <numeric>
 #include <cstdlib>
-#include <queue>
 #include <vector>
 #include <algorithm>
 
 using ll = __int128;
 using ull = unsigned long long;
-using std::gcd;
-using std::queue;
 using std::vector;
 
-ull pow(ull base, ull exp, ull mod){
+inline ll ABS(ll x){
+    return (x >= 0)?x:-x;
+}
+
+ull pow(ll base, ll exp, ll mod){
+    base %= mod;
 	ll result = 1;
 	while(exp){
 		if(exp&1) result = (base*result) % mod;
@@ -20,6 +22,18 @@ ull pow(ull base, ull exp, ull mod){
 		exp >>= 1;
 	}
 	return (ull)result;
+}
+
+ull mGCD(ull a, ull b){
+    if(a < b){
+        ull tmp = a; a = b; b = tmp;
+    }
+    while(b != 0){
+        ull r = a%b;
+        a = b;
+        b = r;
+    }
+    return a;
 }
 
 bool rabin(ull p, ull x){
@@ -47,18 +61,18 @@ bool is_prime(ull x){
 
 
 ull pollard_rho(ll n){
-	if((n & 1) == 0) return 2;
+	if(n % 2 == 0) return 2;
 	if(is_prime(n)) return n;
 	ll x = rand()%(n-2)+2;
 	ll y = x;
 	ll c = rand() % 10 + 1;
 	ll g = 1;
 	while(g == 1){
-		x = (((x*x)%n)+c)%n;
-		y = (((y*y)%n)+c)%n;
-		y = (((y*y)%n)+c)%n;
+		x = (x*x%n+c)%n;
+		y = (y*y%n+c)%n;
+		y = (y*y%n+c)%n;
 
-		g = gcd(std::abs(x-y), n);
+		g = mGCD(ABS(x-y), n);
 		if(g == n) return pollard_rho(n);
 	}
 	if(is_prime(g)) return g;
@@ -66,8 +80,10 @@ ull pollard_rho(ll n){
 }
 
 int main(){
-	std::cin.tie(NULL)->sync_with_stdio(false);
-	std::cout.tie(NULL)->sync_with_stdio(false);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL); 
+    std::cout.tie(NULL);
+
 	
 	ull n;
 	std::cin >> n;
@@ -80,8 +96,8 @@ int main(){
 	}
 
 	std::sort(v.begin(), v.end());
-	for(auto& x: v){
-		std::cout << x << std::endl;
+	for(int i = 0; i < v.size(); i ++){
+		std::cout << v[i] << "\n";
 	}
 
 	return 0;

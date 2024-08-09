@@ -47,6 +47,8 @@ bool is_prime(ull x){
 
 
 ull pollard_rho(ll n){
+	if((n & 1) == 0) return 2;
+	if(is_prime(n)) return n;
 	ll x = rand()%(n-2)+2;
 	ll y = x;
 	ll c = rand() % 10 + 1;
@@ -59,7 +61,8 @@ ull pollard_rho(ll n){
 		g = gcd(std::abs(x-y), n);
 		if(g == n) return pollard_rho(n);
 	}
-	return g;
+	if(is_prime(g)) return g;
+	else return pollard_rho(g);
 }
 
 int main(){
@@ -68,26 +71,14 @@ int main(){
 	
 	ull n;
 	std::cin >> n;
-	queue<ull> q{};
 	vector<ull> v{};
-
-	q.push(n);
-	while(!q.empty()){
-		ll x = q.front(); q.pop();
-		while((x&1) == 0){
-			v.push_back(2);
-			x >>= 1;
-		}
-		if(x == 1) break;
-		if(is_prime(x)){
-			v.push_back(x);
-			continue;
-		}
-		ll r = pollard_rho(x);
-		q.push(r);
-		q.push(x/r);
-	}
 	
+	while(n > 1){
+		ull p = pollard_rho(n);
+		v.push_back(p);
+		n /= p;
+	}
+
 	std::sort(v.begin(), v.end());
 	for(auto& x: v){
 		std::cout << x << std::endl;

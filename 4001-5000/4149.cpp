@@ -34,28 +34,27 @@ bool rabin(ull p, ull x){
 
 bool is_prime(ull x){
 	ull p[] = {
-		2, 3, 5, 7, 11, 13, 17, 19 ,23, 29, 31, 37, 61
+		2, 3, 5, 7, 11, 13, 17, 19 ,23, 29, 31, 37
 	};
-	for(int i = 0; i < 13; i ++)
+	for(int i = 0; i < 12; i ++)
 		if(p[i] == x) return true;
 
-	for(int i = 0; i < 13; i ++){
+	for(int i = 0; i < 12; i ++){
 		if(rabin(p[i], x) == false) return false;
 	}
 	return true;
 }
 
-ll f(ll x, ll n){
-	return (((x*x)%n)+1)%n;
-}
 
 ull pollard_rho(ll n){
 	ll x = rand()%(n-2)+2;
 	ll y = x;
+	ll c = rand() % 10 + 1;
 	ll g = 1;
 	while(g == 1){
-		x = f(x, n);
-		y = f(f(y, n), n);
+		x = (((x*x)%n)+c)%n;
+		y = (((y*y)%n)+c)%n;
+		y = (((y*y)%n)+c)%n;
 
 		g = gcd(std::abs(x-y), n);
 		if(g == n) return pollard_rho(n);

@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <queue>
+#include <tuple>
 
 using std::queue;
 
@@ -24,7 +25,7 @@ int main(){
 
 	int v[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 	queue<std::tuple<int, int, int>> q{};
-	q.push({sx, sy, 0});
+	q.push(std::make_tuple(sx, sy, 0));
 	vi[sy][sx] = true;
 	
 	while(!q.empty()){
@@ -37,13 +38,17 @@ int main(){
 			if(!(0 <= ny && ny <= h)) continue;
 			if(m[ny][nx] == 0) continue;
 			if(vi[ny][nx]) continue;
-			q.push({nx, ny, c+1});
+			q.push(std::make_tuple(nx, ny, c+1));
 			vi[ny][nx] = true;
 		}
 	}
 	
 	for(int y = 0; y < h; y ++){
 		for(int x = 0; x < h; x ++){
+			if((x != sx && y != sy) && (r[y][x] == 0 && m[y][x] == 1)){
+				printf("-1 ");
+				continue;
+			}
 			printf("%d ", r[y][x]);
 		}
 		printf("\n");

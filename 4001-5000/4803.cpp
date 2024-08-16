@@ -45,7 +45,18 @@ int main(){
 
 		for(int i = 0; i < m; i ++){
 			int u, v;
+			bool pass = false;
 			scanf("%d %d", &u, &v);
+
+			for(auto& k: graph[u]){
+				if(k == v) pass = true;
+			}
+
+			for(auto& k: graph[v]){
+				if(k == u) pass = true;
+			}
+			if(pass) continue;
+
 			graph[u].push_back(v);
 			graph[v].push_back(u);
 			f[u] = combine(parent, u, v);	

@@ -32,13 +32,12 @@ int build(int& id, T& graph, T& scc, int cur, int* ids, bool* finished, U& s){
 }
 
 int main(){
-	unordered_map<int, vector<int>> graph{};
-	stack<int> s{};
-	unordered_map<int, vector<int>> scc{};
-
 	int n, m;
 
 	while(scanf("%d %d", &n, &m) != EOF){
+		unordered_map<int, vector<int>> graph{};
+		stack<int> s{};
+		unordered_map<int, vector<int>> scc{};
 		int id = 0;
 		int ids[2*N] = { 0, };
 		bool finished[2*N] = { 0, };
@@ -64,7 +63,7 @@ int main(){
 				break;
 			}
 		}
-		printf("%s\n", result?"YES":"NO");
+		printf("%s\n", result?"yes":"no");
 	}
 
 	return 0;

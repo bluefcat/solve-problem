@@ -22,7 +22,7 @@ void propagate(ll tree[][2], int l, int r, int idx){
 	tree[idx][1] = 0;
 }
 
-ll update(ll tree[][2], int l, int r, int s, int e, int k, int idx){
+ll update(ll tree[][2], int l, int r, int s, int e, ll k, int idx){
 	propagate(tree, l, r, idx);
 	if(r < s || e < l) return tree[idx][0];
 	if(s <= l && r <= e){

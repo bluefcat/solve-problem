@@ -24,27 +24,27 @@ ll update(ll* tree, int l, int r, int k, int idx){
 int main(){
 	int dict[N] = { 0, };
 	int arr[N] = { 0, };
+	int rev[N] = { 0, };
 	ll tree[4*N+4] = { 0, };
 	int n, cnt = 0;
 	scanf("%d", &n);
 	for(int i = 0; i < n; i ++){
 		int x;
 		scanf("%d", &x);
-		dict[x] = ++cnt;
+		dict[x] = cnt++;
 	}
 	for(int i = 0; i < n; i ++){
 		int x;
 		scanf("%d", &x);
-		arr[i] = dict[x];
+		arr[dict[x]] = i;
 	}
 	ll result = 0;
 
-	for(int i = 0; i < n; i ++){
-		result += i-query(tree, 0, n-1, arr[i], 0);
+	for(ll i = 0; i < n; i ++){
+		ll x = query(tree, 0, n-1, arr[i], 0);
+		result += i-x;
 		update(tree, 0, n-1, arr[i], 0);
 	}
 	printf("%lld\n", result);
-
-
 	return 0;
 }

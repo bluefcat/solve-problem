@@ -8,17 +8,18 @@ using std::pair;
 using std::vector;
 using ll = long long;
 
-constexpr int N = 10001;
+constexpr int N = 14001;
 constexpr int get_left(int x){ return (x << 1) + 1; }
 constexpr int get_right(int x){ return (x << 1) + 2; }
 
-bool compare(pair<ll, ll>& x, pair<ll, ll>& y){
+bool compare(pair<int, int>& x, pair<int, int>& y){
 	if(x.second == y.second) 
 		return x.first < y.first;
 	return x.second < y.second;
 }
+int tree[7000][4*10000+4] = { 0, };
 
-ll update(ll tree[], int l, int r, int k, int idx){
+int update(int tree[], int l, int r, int k, int idx){
 	if(!(l <= k && k <= r)) return tree[idx];
 	if(l == r) return tree[idx] += 1;
 	int m = (l + r) >> 1;
@@ -26,7 +27,7 @@ ll update(ll tree[], int l, int r, int k, int idx){
 					   update(tree, m+1, r, k, get_right(idx));
 }
 
-ll query(ll tree[], int l, int r, ll s, ll e, int idx){
+int query(int tree[], int l, int r, int s, int e, int idx){
 	if(r <= s || e <= l) return 0;
 	if(s < l && r < e) return tree[idx];
 	int m = (l + r) >> 1;
@@ -36,18 +37,14 @@ ll query(ll tree[], int l, int r, ll s, ll e, int idx){
 
 
 int main(){
-	ll n, m;
-	vector<ll> dict{};
-	std::unordered_map<ll, ll> pos{};
-	vector<pair<ll, ll>> line{};
-	scanf("%lld %lld", &n, &m);
-	assert(2 <= n && n <= 1000000000);
-	for(ll i = 0; i < m; i ++){
-		ll u, v;
-		scanf("%lld %lld", &u, &v);
-		assert(u != v);
-		assert(u <= n);
-		assert(v <= n);
+	int n, m;
+	vector<int> dict{};
+	std::unordered_map<int, int> pos{};
+	vector<pair<int, int>> line{};
+	scanf("%d %d", &n, &m);
+	for(int i = 0; i < m; i ++){
+		int u, v;
+		scanf("%d %d", &u, &v);
 		if(u > v){
 			ll tmp = u; u = v; v = tmp;
 		}
@@ -66,15 +63,14 @@ int main(){
 	ll result = 0;
 	for(int i = 2; i < line.size(); i ++){
 		auto& [u, v] = line[i];
-		ll u_id = pos[u];
-		ll tree[4*N+4] = { 0, };
+	    int u_id = pos[u];
 		for(int j = i-1; j >=0; j --){
 			auto& [p, q] = line[j];
 			if(!((p < u) && (u < q && q < v))) continue;
-			ll p_id = pos[p];
-			ll pl = query(tree, 0, N-1, p_id, u_id, 0);
+			int p_id = pos[p];
+			ll pl = query(tree[i-2], 0, N-1, p_id, u_id, 0);
 			result += pl;
-			update(tree, 0, N-1, p_id, 0);
+			update(tree[i-2], 0, N-1, p_id, 0);
 		}
 	}
 	printf("%lld\n", result);

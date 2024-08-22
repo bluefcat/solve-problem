@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
 
 using std::pair;
 using std::vector;
@@ -25,7 +26,7 @@ ll update(ll tree[], int l, int r, int k, int idx){
 					   update(tree, m+1, r, k, get_right(idx));
 }
 
-ll query(ll tree[], int l, int r, int s, int e, int idx){
+ll query(ll tree[], int l, int r, ll s, ll e, int idx){
 	if(r <= s || e <= l) return 0;
 	if(s < l && r < e) return tree[idx];
 	int m = (l + r) >> 1;
@@ -37,6 +38,7 @@ ll query(ll tree[], int l, int r, int s, int e, int idx){
 int main(){
 	ll n, m;
 	vector<ll> dict{};
+	std::unordered_map<ll, ll> pos{};
 	vector<pair<ll, ll>> line{};
 	scanf("%lld %lld", &n, &m);
 	assert(2 <= n && n <= 1000000000);
@@ -57,15 +59,19 @@ int main(){
 	std::sort(dict.begin(), dict.end());
 	std::sort(line.begin(), line.end(), compare);
 
+	for(int i = 0; i < dict.size(); i ++){
+		pos[dict[i]] = i;
+	}
+
 	ll result = 0;
 	for(int i = 2; i < line.size(); i ++){
 		auto& [u, v] = line[i];
-		int u_id = std::upper_bound(dict.begin(), dict.end(), u) - dict.begin();
+		ll u_id = pos[u];
 		ll tree[4*N+4] = { 0, };
 		for(int j = i-1; j >=0; j --){
 			auto& [p, q] = line[j];
 			if(!((p < u) && (u < q && q < v))) continue;
-			int p_id = std::upper_bound(dict.begin(), dict.end(), p) - dict.begin();
+			ll p_id = pos[p];
 			ll pl = query(tree, 0, N-1, p_id, u_id, 0);
 			result += pl;
 			update(tree, 0, N-1, p_id, 0);

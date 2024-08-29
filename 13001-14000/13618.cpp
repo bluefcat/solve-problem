@@ -12,7 +12,7 @@ pair gcd(ll u, ll v){
 
 	while(v > 0){
 		ll q = u/v;
-		ll r = u%r;
+		ll r = u%v;
 		ll ns = s[0] - q*s[1];
 		ll nt = t[0] - q*t[1];
 		u = v, v = r;

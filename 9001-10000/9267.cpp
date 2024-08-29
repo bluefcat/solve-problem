@@ -32,17 +32,17 @@ int main(){
 	lll g = x*(lll)a+y*(lll)b;
 	x = x*S/g;
 	y = y*S/g;
-	if(x <= 0){
+	if(!(x == 0 && y == 1) && x <= 0){
 		lll cnt = (-x)*g/b + 1;
 		x += cnt * b/g;
 		y -= cnt * a/g;
 	}
-	if(y <= 0){
+	if(!(x == 1 && y == 0)&& y <= 0){
 		lll cnt = (-y)*g/a + 1;
 		x -= cnt * b/g;
 		y += cnt * a/g;
 	}
-	if(x > 0 && y > 0 && (lll)a*x+(lll)b*y == (lll)S){
+	if(((x > 0 && y > 0) || (x == 1 && y == 0) || (x == 0 && y == 1)) && (lll)a*x+(lll)b*y == (lll)S){
 		printf("YES\n");
 	}
 	else{

@@ -24,8 +24,12 @@ std::pair<lll, lll> eea(ll u, ll v){
 int main(){
 	ll a, b, S;
 	scanf("%lld %lld %lld", &a, &b, &S);
+	if(a == 0 && b == 0 && S == 0){
+		printf("YES\n");
+		return 0;
+	}
 	auto [x, y] = eea(a, b);
-	ll g = x*a+y*b;
+	lll g = x*(lll)a+y*(lll)b;
 	x = x*S/g;
 	y = y*S/g;
 	if(x <= 0){
@@ -38,7 +42,7 @@ int main(){
 		x -= cnt * b/g;
 		y += cnt * a/g;
 	}
-	if(x > 0 && y > 0 && a*x+b*y == (lll)S){
+	if(x > 0 && y > 0 && (lll)a*x+(lll)b*y == (lll)S){
 		printf("YES\n");
 	}
 	else{

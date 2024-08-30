@@ -17,14 +17,17 @@ int main(){
 	for(int i = 0; i < p; i ++){
 		int u, v;
 		scanf("%d %d", &u, &v);
-		graph[u][v] ++;
-		graph[v][u] ++;
+		graph[u][v] = 1;
+		graph[v][u] = 0;
+		flow[u][v] = 0;
+		flow[v][u] = 0;
 	}
 
 	int result = 0, s = 1, e = 2;
 	while(true){
 		int table[N] = { 0, };
 		queue<int> q{};
+		table[s] = s;
 		q.push(s);
 
 		while(!q.empty() && !table[e]){
@@ -49,8 +52,8 @@ int main(){
 			);
 
 		for(int i = e; i != s; i = table[i]){
-			flow[table[e]][e] += f;
-			flow[e][table[e]] -= f;
+			flow[table[i]][i] += f;
+			flow[i][table[i]] -= f;
 		}
 
 		result += f;

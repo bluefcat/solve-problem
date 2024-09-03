@@ -1,97 +1,87 @@
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <complex>
+#include <vector>
+#include <algorithm>
 
-const double PI = acos(-1);
 using complex = std::complex<double>;
+using ll = long long;
+using std::vector;
 
-void FFT(std::vector<complex> &vec, bool inv){
-    int size = vec.size();
+constexpr double pi = 3.14159265358979;
+constexpr int N = 300002;
 
-    for(int i = 1, j = 0; i < size; i ++){
-        int bit = size/2;
+void fft(vector<complex>& f, bool inv){
+	int n = f.size();
+	if(n == 1) return;
 
-        while(j >= bit){
-            j -= bit;
-            bit /= 2;
-        }
-        j += bit;
+	for(int i = 1, j = 0; i < n; i ++){
+		int bit = n / 2;
 
-        if(i < j) swap(vec[i], vec[j]);
-    }
+		while(j >= bit){
+			j -= bit;
+			bit /= 2;
+		}
 
-    for(int k = 1; k < size; k <<= 1){
-        double angle = (inv ? PI/k : -PI/k);   
-        complex w{cos(angle), sin(angle)};
+		j += bit;
+		if(i < j) std::swap(f[i], f[j]);
+	}
 
-        for(int i = 0; i < size; i += (k << 1)){
-            complex z{1, 0};
+	for(int k = 1; k < n; k <<= 1){
+		double angle = inv?pi/k:-pi/k;
+		complex w{cos(angle), sin(angle)};
 
-            for(int j = 0; j < k; j ++){
-                complex even = vec[i+j];
-                complex odd = vec[i+j+k];
+		for(int i = 0; i < n; i += (k << 1)){
+			complex wi{1, 0};
 
-                vec[i+j] = even + z * odd;
-                vec[i+j+k] = even - z * odd;
-
-                z *= w;
-            }
-        }
-    }
-
-    if(inv) for(int i = 0; i < size; i ++) vec[i] /= size;
-    return ;
-}
-
-std::vector<int> mul(std::vector<int> &v, std::vector<int> &u){
-    std::vector<complex> vc(v.begin(), v.end());
-    std::vector<complex> uc(u.begin(), u.end());
-
-    int size = 2;
-    while(size < v.size() + u.size()) size <<= 1;
-
-    vc.resize(size); FFT(vc, false);
-    uc.resize(size); FFT(uc, false);
-
-    for(int i = 0; i < size; i ++) vc[i] *= uc[i];
-    FFT(vc, true);
-
-    std::vector<int> w(size);
-    for(int i = 0; i < size; i ++) w[i] = round(vc[i].real());
-
-    return w;
+			for(int j = 0; j < k; j ++){
+				complex even = f[i+j];
+				complex odd = f[i+j+k];
+				f[i+j] = even + wi * odd;
+				f[i+j+k] = even - wi * odd;
+				wi *= w;
+			}
+		}
+	}
 }
 
 int main(){
-    char x[300001] = { 0, };
-    char y[300001] = { 0, };
+	ll size = 1;
+	while(N+1 > size) size <<= 1;
+	size <<= 1;
+	vector<complex> x(size, 0), y(size, 0);
+	int result[N*2] = { 0, };
+	
+	int xidx = 0, yidx = 0;
+	char tmp;
+	while(scanf("%c", &tmp) != EOF && tmp != ' '){
+		x[xidx++] = { (double)(tmp-'0'), 0 };
+	}
 
-    scanf("%s %s", x, y);
-
-    if(x[0] == '0' || y[0] == '0'){
-        printf("0\n");
-        return 0;
-    }
-
-    std::vector<int> v(strlen(x));
-    std::vector<int> u(strlen(y));
-
-    for(int i = 0; i < strlen(x); i ++) v[strlen(x) - i - 1] = x[i] - '0';
-    for(int j = 0; j < strlen(y); j ++) u[strlen(y) - j - 1] = y[j] - '0';
+	while(scanf("%c", &tmp) != EOF && tmp != ' ' && tmp != '\n'){
+		y[yidx++] = { (double)(tmp-'0'), 0 };
+	}
 
 
-    std::vector<int> w = mul(v, u);
+	fft(x, false); fft(y, false);
+	for(int i = 0; i < size; i ++) x[i] *= y[i];
+	fft(x, true);
+	
+	int length = xidx+yidx-2;
+	ll carry = 0;
+	for(int i = length; i >= 0; i --){
+		x[i] /= complex(size, 0);
+		x[i] = {round(x[i].real()), round(x[i].imag())};
+		ll tmp = (ll)x[i].real();
+		ll calc = tmp % 10 + carry % 10;
+		result[length-i] = calc % 10;
+		carry = tmp / 10 + carry/10 + calc/10;
+	}
 
-    for (int i = 0; i < v.size() + u.size() - 1; i++) {
-        w[i + 1] += w[i] / 10;
-        w[i] = w[i] % 10;
-    }
+	if(carry != 0 ) printf("%lld", carry);
+	for(int i = length; i >= 0; i--)
+		printf("%d", result[i]);
+	printf("\n");
 
-    int cnt = w.size() - 1;
 
-    while (w[cnt] == 0) {
-        cnt--;
-        if (cnt == 0) break;
-    }
-    for (int i = cnt; i >= 0; i--) printf("%d", w[i]);
-    printf("\n");
-    return 0;
+	return 0;
 }

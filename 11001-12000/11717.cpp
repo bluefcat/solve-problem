@@ -15,7 +15,7 @@ int grundy(T& board, int w, int h, int x0, int x1, int y0, int y1){
 	if(!(isin(w, x0, x1) && isin(h, y0, y1))) return 0;
 	if(cache[x0][x1][y0][y1] != -1) return cache[x0][x1][y0][y1];
 	if(x0 == x1 && y0 == y1){
-		return board[x0][y0] == '.';
+		return board[y0][x0] == '.';
 	}
 	
 	bool check[N*N] = { false, };
@@ -28,7 +28,7 @@ int grundy(T& board, int w, int h, int x0, int x1, int y0, int y1){
 			result ^= grundy(board, w, h, x0, x-1, y+1, y1);
 			result ^= grundy(board, w, h, x+1, x1, y0, y-1);
 			result ^= grundy(board, w, h, x+1, x1, y+1, y1);
-			check[result]  = true;
+			check[result] = true;
 		}
 	}
 	

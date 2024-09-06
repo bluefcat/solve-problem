@@ -6,38 +6,39 @@ using std::vector;
 using std::unordered_map;
 using std::pair;
 
-template<typename T, typename U>
-int dfs(T& graph, int from, U& visited){
+constexpr int N = 2001;
+int degree[N] = { 0, };
+int life[N][N] = { 0, };
+unordered_map<int, vector<pair<int, int>>> edges{};
+
+template<typename U>
+int dfs(int from, U& visited){
 	int result = 1;
 	visited[from] = true;
-	for(auto& [_, to]: graph[from]){
+	for(auto& [_, to]: edges[from]){
 		if(visited[to]) continue;
-		result += dfs(graph, to, visited);
+		result += dfs(to, visited);
 	}
 	return result;
 }
 
-template<typename T, typename U>
-void eulerian(T& edges, U& life, int from){
+void eulerian(int from){
 	for(auto& [_, to]: edges[from]){
 		if(life[from][to] <= 0) continue;
 		
 		life[from][to] --;
 		life[to][from] --;
-		eulerian(edges, life, to);
+		eulerian(to);
 	}
 
 	printf("%d ", from);
 }
 
-
 int main(){
-	unordered_map<int, int> degree{};
-	unordered_map<int, vector<pair<int, int>>> edges{};
-	unordered_map<int, unordered_map<int, int>> life{};
 	
 	int n = 0;
 	scanf("%d", &n);
+	
 	for(int from = 1; from <= n; from ++){
 		for(int to = 1; to <= n; to ++){
 			int v = 0;
@@ -45,11 +46,11 @@ int main(){
 			if(from > to || v == 0) continue;
 			edges[from].push_back({from, to});
 			edges[to].push_back({to, from});
-			life[from][to] ++;
-			life[to][from] ++;
+			life[from][to] += v;
+			life[to][from] += v;
 
-			degree[from] ++;
-			degree[to] ++;
+			degree[from] += v;
+			degree[to] += v;
 		}
 	}
 
@@ -60,11 +61,11 @@ int main(){
 		}
 	}
 	unordered_map<int, bool> visited{};
-	int start;
-	bool flag;
+	int start = 1;
+	bool flag = false;
 	for(int i = 1; i <= n; i ++){
 		if(visited[i]) continue;
-		int size = dfs(edges, i, visited);
+		int size = dfs(i, visited);
 		if(size > 1){
 			if(flag){
 				printf("-1\n");
@@ -77,7 +78,7 @@ int main(){
 		}
 	}
 	
-	eulerian(edges, life, 1);
+	eulerian(start);
 	printf("\n");
 
 	return 0;

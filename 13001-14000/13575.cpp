@@ -8,7 +8,7 @@ using ll = long long;
 using std::vector;
 
 constexpr double pi = 3.14159265358979;
-constexpr int N = 3002;
+constexpr int N = 1000002;
 
 void fft(vector<complex>& f, bool inv){
 	int n = f.size();
@@ -44,12 +44,23 @@ void fft(vector<complex>& f, bool inv){
 	}
 }
 
-void mul(vector<complex>& x, vector<complex> y, int size){
+void square(vector<complex>& x, int size){
+	fft(x, false);
+	for(int i = 0; i < size; i ++){
+		x[i] *= x[i];
+	}
+	fft(x, true);
+	for(int i = 0; i < size; i ++){
+		if((ll)x[i].real() != 0) x[i] = { 1, 0 };
+	}
+}
+
+void mul(vector<complex>& x, vector<complex>& y, int size){
 	fft(x, false); fft(y, false);
 	for(int i = 0; i < size; i ++){
 		x[i] *= y[i];
 	}
-	fft(x, true);
+	fft(x, true); fft(y, true);
 	
 	for(int i = 0; i < size; i ++){
 		if((ll)x[i].real() != 0) x[i] = { 1, 0 };
@@ -80,7 +91,7 @@ int main(){
 	while(p){
 		if(p & 1)
 			mul(r, x, size);
-		mul(x, x, size);
+		square(x, size);
 		p >>= 1;
 	}
 

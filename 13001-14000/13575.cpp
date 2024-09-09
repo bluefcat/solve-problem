@@ -8,7 +8,7 @@ using ll = long long;
 using std::vector;
 
 constexpr double pi = 3.14159265358979;
-constexpr int N = 1000002;
+constexpr int N = 3002;
 
 void fft(vector<complex>& f, bool inv){
 	int n = f.size();
@@ -44,6 +44,18 @@ void fft(vector<complex>& f, bool inv){
 	}
 }
 
+void mul(vector<complex>& x, vector<complex> y, int size){
+	fft(x, false); fft(y, false);
+	for(int i = 0; i < size; i ++){
+		x[i] *= y[i];
+	}
+	fft(x, true);
+	
+	for(int i = 0; i < size; i ++){
+		if((ll)x[i].real() != 0) x[i] = { 1, 0 };
+	}
+}
+
 int main(){
 	int n, k;
 	int max_v, min_v;
@@ -63,22 +75,16 @@ int main(){
 		x[v] = { 1, 0 };
 	}
 
-	fft(x, false);
 	vector<complex> r(x);
 	int p = k-1;
 	while(p){
-		if(p & 1){
-			for(int i = 0; i < size; i ++) r[i] *= x[i];
-		}
-		for(int i = 0; i < size; i ++) x[i] *= x[i];
+		if(p & 1)
+			mul(r, x, size);
+		mul(x, x, size);
 		p >>= 1;
 	}
 
-	fft(r, true);
-
 	for(int i = min_v*k; i <= max_v*k; i ++){
-		r[i] /= complex(size, 0);
-		r[i] = {round(r[i].real()), round(r[i].imag())};
 		if((ll)r[i].real() != 0)
 			printf("%d ", i);
 	}

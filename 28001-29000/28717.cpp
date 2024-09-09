@@ -46,12 +46,12 @@ bool rabin(ull p, ull x){
 
 bool is_prime(ull x){
 	ull p[] = {
-		2, 3, 5, 7, 11, 13, 17, 19 ,23, 29, 31, 37
+		2, 7, 61
 	};
-	for(int i = 0; i < 12; i ++)
+	for(int i = 0; i < 3; i ++)
 		if(p[i] == x) return true;
 
-	for(int i = 0; i < 12; i ++){
+	for(int i = 0; i < 3; i ++){
 		if(rabin(p[i], x) == false) return false;
 	}
 	return true;
@@ -81,13 +81,17 @@ int main(){
 	unordered_map<ull, ull> cand{};
 	int n;
 	scanf("%d", &n);
-
+	
 	for(int i = 0; i < n ; i ++){
+		unordered_map<ull, bool> check{};
 		ull x;
 		scanf("%lld", &x);
 		while(x > 1){
 			ull p = pollard_rho(x);
-			cand[p]++;
+			if(check[p] == false){
+				check[p] = true;
+				cand[p]++;
+			}
 			x /= p;
 		}
 	}

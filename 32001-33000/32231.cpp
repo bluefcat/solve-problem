@@ -4,7 +4,7 @@
 
 using std::sqrt;
 
-constexpr double ep = 1e-11;
+constexpr double ep = 1e-32;
 
 double get_c1(double x1, double y1, double x2, double y2){
 	double sc = (x2*x2-2*x1*x2+x1*x1);
@@ -46,10 +46,13 @@ int main(){
 			y1 = y2;
 			y2 = tmp;
 		}
+		x2 = x2-x1;
+		x1 = 0;
 
 		double c1 = -get_c1(x1, y1, x2, y2);
 		if(y1 > y2) c1 *= -1;
 		double c2 = x2 - f(c1, y2);
+
 		double result = 0;
 		if(y1 <= y2){
 			result = inte(c1, y2) - inte(c1, y1);
@@ -59,9 +62,12 @@ int main(){
 		}
 
 		if(!(x1 - ep < f(c1, y1)+c2 && f(c1, y1)+c2 < x1 + ep)){
-			result = inte(c1, 1/c1) - inte(c1, y2) + inte(c1, 1/c1) - inte(c1, y1);
+			if(c1 > 0)
+				result = inte(c1, 1/c1) - inte(c1, y2) + inte(c1, 1/c1) - inte(c1, y1);
+			else
+				result = inte(c1, -1/c1) - inte(c1, y2) + inte(c1, -1/c1) - inte(c1, y1);
 		}
-		printf("%.6lf\n", std::abs(result));
+		printf("%.6lf\n", result);
 	}
 	return 0;
 }

@@ -3,12 +3,14 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <unordered_map>
+#include <unordered_set>
 
 using pair = std::pair<int, int>;
 using std::vector;
 
 constexpr int N = 300001;
-constexpr int M = 100001;
+constexpr int M = 10001;
 constexpr int SN = 550;
 
 int arr[N] = { 0, };
@@ -44,33 +46,57 @@ int main(){
 	);
 	
 	int ps = -1, pe = -1;
-	int rn = -1;
+	int rn = 0, srn = 0;
 	int cnt[M] = { 0, };
+	std::unordered_map<int, std::unordered_set<int>> vcnt{};
 	for(auto& [p, idx]: query){
 		auto& [s, e] = p;
-		while(ps < s){
-			if(ps != -1) cnt[arr[ps]] --;
-			ps ++;
-			if(cnt[rn] < cnt[arr[ps]]) rn = arr[ps];
-		}
-		while(e < pe){
-			cnt[arr[pe]] --;
-			pe --;
-			if(cnt[rn] < cnt[arr[pe]]) rn = arr[pe];
-		}
 		while(s < ps){
 			ps --;
-			cnt[arr[ps]] ++;
+			int cur = arr[ps];
+
+			vcnt[cnt[cur]].erase(cur);
+			cnt[cur] ++;
+			vcnt[cnt[cur]].insert(cur);
+
 			if(cnt[rn] < cnt[arr[ps]]) rn = arr[ps];
+		}
+		while(ps < s){
+			if(ps != -1){ 
+				int cur = arr[ps];
+
+				vcnt[cnt[cur]].erase(cur);
+				int nxt = !vcnt[cnt[cur]].empty()?(*vcnt[cnt[cur]].begin()):cur;
+				cnt[cur] --;
+				vcnt[cnt[cur]].insert(cur);
+				
+				rn = nxt;
+			}
+			ps ++;
 		}
 		while(pe < e){
 			pe ++;
-			cnt[arr[pe]] ++;
+			int cur = arr[pe];
+
+			vcnt[cnt[cur]].erase(cur);
+			cnt[cur] ++;
+			vcnt[cnt[cur]].insert(cur);
+
 			if(cnt[rn] < cnt[arr[pe]]) rn = arr[pe];
+		}
+		while(e < pe){
+			int cur = arr[pe];
+
+			vcnt[cnt[cur]].erase(cur);
+			int nxt = !vcnt[cnt[cur]].empty()?(*vcnt[cnt[cur]].begin()):cur;
+			cnt[cur] --;
+			vcnt[cnt[cur]].insert(cur);
+			
+			rn = nxt;
+			pe --;
 		}
 		result[idx][0] = rn;
 		result[idx][1] = cnt[rn]*2 > (e-s+1);
-		ps = s, pe = e;
 	}
 
 

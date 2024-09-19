@@ -44,11 +44,23 @@ int main(){
 			return pidx < qidx;
 		}
 	);
-	
-	int ps = -1, pe = -1;
+	int ps = query[0].first.first, pe = query[0].first.second;
 	int rn = 0;
 	int cnt[C] = { 0, };
-	for(auto& [p, idx]: query){
+
+	for(int i = ps; i <= pe; i ++){
+		int cur = arr[i];
+	 	vcnt[cnt[cur]].erase(cur);
+		cnt[cur] ++;
+		vcnt[cnt[cur]].insert(cur);
+		
+		if(cnt[rn] < cnt[cur]) rn = cur;
+	}
+	result[query[0].second][0] = rn;
+	result[query[0].second][1] = (pe-ps+1) < 2*cnt[rn];
+	
+	for(int i = 1; i < query.size(); i ++){
+		auto& [p, idx] = query[i];
 		auto& [s, e] = p;
 		while(s < ps){
 			ps --;
@@ -58,19 +70,17 @@ int main(){
 			cnt[cur] ++;
 			vcnt[cnt[cur]].insert(cur);
 
-			if(cnt[rn] < cnt[arr[ps]]) rn = arr[ps];
+			if(cnt[rn] < cnt[arr[ps]]) rn = cur;
 		}
 		while(ps < s){
-			if(ps != -1){ 
-				int cur = arr[ps];
+			int cur = arr[ps];
 
-				vcnt[cnt[cur]].erase(cur);
-				int nxt = !vcnt[cnt[cur]].empty()?(*vcnt[cnt[cur]].begin()):cur;
-				cnt[cur] --;
-				vcnt[cnt[cur]].insert(cur);
-				
-				rn = nxt;
-			}
+			vcnt[cnt[cur]].erase(cur);
+			int nxt = !vcnt[cnt[cur]].empty()?(*vcnt[cnt[cur]].begin()):cur;
+			cnt[cur] --;
+			vcnt[cnt[cur]].insert(cur);
+			
+			rn = nxt;
 			ps ++;
 		}
 		while(pe < e){
@@ -81,7 +91,7 @@ int main(){
 			cnt[cur] ++;
 			vcnt[cnt[cur]].insert(cur);
 
-			if(cnt[rn] < cnt[arr[pe]]) rn = arr[pe];
+			if(cnt[rn] < cnt[arr[pe]]) rn = cur;
 		}
 		while(e < pe){
 			int cur = arr[pe];

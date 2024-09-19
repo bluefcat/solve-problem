@@ -48,23 +48,23 @@ int main(){
 	int cnt[N] = { 0, };
 	for(auto& [p, idx]: query){
 		auto& [s, e] = p;
-		while(pe < e){
-			pe ++;
-			cnt[arr[pe]] ++;
-			if(arr[rn] < cnt[arr[pe]]) rn = arr[pe];
-		}	
+		while(ps < s){
+			if(ps != -1) cnt[arr[ps]] --;
+			ps ++;
+		}
 		while(e < pe){
 			cnt[arr[pe]] --;
 			pe --;
 		}
+		while(pe < e){
+			pe ++;
+			cnt[arr[pe]] ++;
+			if(cnt[rn] < cnt[arr[pe]]) rn = arr[pe];
+		}	
 		while(s < ps){
 			ps --;
 			cnt[arr[ps]] ++;
-			if(arr[rn] < cnt[arr[ps]]) rn = arr[ps];
-		}
-		while(ps < s){
-			cnt[arr[ps]] --;
-			ps ++;
+			if(cnt[rn] < cnt[arr[ps]]) rn = arr[ps];
 		}
 		result[idx] = cnt[rn];
 		ps = s, pe = e;

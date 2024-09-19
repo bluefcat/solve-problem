@@ -3,18 +3,18 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
-#include <unordered_map>
 #include <unordered_set>
 
 using pair = std::pair<int, int>;
 using std::vector;
 
 constexpr int N = 300001;
+constexpr int C = 10001;
 constexpr int M = 10001;
-constexpr int SN = 550;
 
 int arr[N] = { 0, };
-vector<std::pair<pair, int>> query;
+vector<std::pair<pair, int>> query{};
+std::unordered_set<int> vcnt[N]{};
 int result[M][2] = { 0, };
 
 int main(){
@@ -46,9 +46,8 @@ int main(){
 	);
 	
 	int ps = -1, pe = -1;
-	int rn = 0, srn = 0;
-	int cnt[M] = { 0, };
-	std::unordered_map<int, std::unordered_set<int>> vcnt{};
+	int rn = 0;
+	int cnt[C] = { 0, };
 	for(auto& [p, idx]: query){
 		auto& [s, e] = p;
 		while(s < ps){

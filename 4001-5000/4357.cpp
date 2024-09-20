@@ -1,10 +1,10 @@
 #include <cstdio>
 #include <cmath>
 #include <algorithm>
-#include <unordered_map>
+#include <map>
 
 using lint = long long;
-using unordered_map = std::unordered_map<lint, lint>;
+using map = std::map<lint, lint>;
 using std::min;
 
 lint mpow(lint x, lint e, lint m){
@@ -17,13 +17,14 @@ lint mpow(lint x, lint e, lint m){
 	return result;
 }
 
-unordered_map cache{};
+map cache{};
 
 int main(){
 	lint p, b, n; 
 	while(scanf("%lld %lld %lld", &p, &b, &n) != EOF){
 		cache.clear();
-		lint sn = std::sqrt(n)*5;
+
+		lint sn = sqrt(p);
 			
 		lint invb = mpow(b, p-2, p);
 		lint x = n;

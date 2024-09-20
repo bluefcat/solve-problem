@@ -2,7 +2,7 @@
 #include <math.h>
 
 long double function(long double a, long double b, long double c, long double x){
-	return a * x + b * sin(x) - c;
+	return a * x + b * sinl(x) - c;
 }
 
 long double bisection(
@@ -40,7 +40,7 @@ int main(){
 	
 	scanf("%Lf %Lf %Lf", &a, &b, &c);
 	
-	long double result = bisection(a, b, c, function, pow(10, -20));
+	long double result = bisection(a, b, c, function, 1e-20);
 	
 	result = round(result * 1000000) / 1000000;
 

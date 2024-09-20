@@ -50,7 +50,8 @@ int main(){
 
 	for(int i = ps; i <= pe; i ++){
 		int cur = arr[i];
-		vnt[cnt[cur]].erase(cur);
+		if(auto iter = vnt[cnt[cur]].find(cur); iter != vnt[cnt[cur]].end())
+			vnt[cnt[cur]].erase(cur);
 		cnt[cur] ++;
 		vnt[cnt[cur]].insert(cur);
 		if(cnt[rn] < cnt[cur]) rn = cur;
@@ -64,7 +65,8 @@ int main(){
 		while(ps < s){
 			int cur = arr[ps];
 			
-			vnt[cnt[cur]].erase(cur);
+			if(auto iter = vnt[cnt[cur]].find(cur); iter != vnt[cnt[cur]].end())
+				vnt[cnt[cur]].erase(cur);
 			if(!vnt[cnt[cur]].empty()){ 
 				rn = (*vnt[cnt[cur]].begin());
 			}
@@ -75,7 +77,8 @@ int main(){
 		while(e < pe){
 			int cur = arr[pe];
 
-			vnt[cnt[cur]].erase(cur);
+			if(auto iter = vnt[cnt[cur]].find(cur); iter != vnt[cnt[cur]].end())
+				vnt[cnt[cur]].erase(cur);
 			if(!vnt[cnt[cur]].empty()){ 
 				rn = (*vnt[cnt[cur]].begin());
 			}
@@ -86,7 +89,8 @@ int main(){
 		while(pe < e){
 			pe ++;
 			int cur = arr[pe];
-			vnt[cnt[cur]].erase(cur);
+			if(auto iter = vnt[cnt[cur]].find(cur); iter != vnt[cnt[cur]].end())
+				vnt[cnt[cur]].erase(cur);
 			cnt[cur] ++;
 			vnt[cnt[cur]].insert(cur);
 			if(cnt[rn] < cnt[cur]) rn = cur;
@@ -94,7 +98,8 @@ int main(){
 		while(s < ps){
 			ps --;
 			int cur = arr[ps];
-			vnt[cnt[cur]].erase(cur);
+			if(auto iter = vnt[cnt[cur]].find(cur); iter != vnt[cnt[cur]].end())
+				vnt[cnt[cur]].erase(cur);
 			cnt[cur] ++;
 			vnt[cnt[cur]].insert(cur);
 			if(cnt[rn] < cnt[cur]) rn = cur;

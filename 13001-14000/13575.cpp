@@ -44,9 +44,9 @@ void fft(vector<complex>& f, bool inv){
 	}
 }
 
-void mul(vector<complex>& x, vector<complex>& y){
-	vector<complex> tmpx(x);
-	vector<complex> tmpy(y);
+void mul(vector<int>& x, vector<int>& y){
+	vector<complex> tmpx(x.begin(), x.end());
+	vector<complex> tmpy(y.begin(), y.end());
 
 	ll n = 1;
 	while(n <= tmpx.size() || n <= tmpy.size()) n <<= 1;
@@ -61,28 +61,22 @@ void mul(vector<complex>& x, vector<complex>& y){
 	
 	x.resize(n);
 	for(int i = 0; i < n; i ++){
-		if(round(tmpx[i].real())) x[i] = { 1, 0 };
-		else x[i] = { 0, 0 };
+		if(round(tmpx[i].real())) x[i] = 1;
+		else x[i] = 0;
 	}
 }
 
 int main(){
 	int n, k;
-	int max_v, min_v;
 	scanf("%d %d", &n, &k);
-	vector<complex> x(N, 0);
+	vector<int> x(N, 0);
 	for(int i = 0; i < n; i ++){
 		int v;
 		scanf("%d", &v);
-		if(i == 0){
-			max_v = v; min_v = v;
-		}
-		max_v = std::max(max_v, v);
-		min_v = std::min(min_v, v);
-		x[v] = { 1, 0 };
+		x[v] = 1;
 	}
 
-	vector<complex> r(x);
+	vector<int> r(x);
 	int p = k-1;
 	while(p){
 		if(p & 1) mul(r, x);
@@ -90,8 +84,8 @@ int main(){
 		p >>= 1;
 	}
 
-	for(int i = min_v*k; i <= max_v*k; i ++){
-		if((ll)r[i].real() != 0)
+	for(int i = 0; i <= r.size(); i ++){
+		if(r[i] != 0)
 			printf("%d ", i);
 	}
 	printf("\n");

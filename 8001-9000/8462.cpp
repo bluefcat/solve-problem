@@ -15,7 +15,7 @@ constexpr int A = 1000001;
 int arr[N] = { 0, };
 vector<std::pair<pair, int>> query;
 lint result[M] = { 0, };
-int cnt[A] = { 0, };
+lint cnt[A] = { 0, };
 
 int main(){
 	int n, m;
@@ -44,40 +44,44 @@ int main(){
 	);
 	
 	int ps = query[0].first.first, pe = query[0].first.second;
+	int pidx = query[0].second;
 
 	for(int i = ps; i <= pe; i ++){
 		int cur = arr[i];
 		cnt[cur] ++;
 	}
 	for(int i = ps; i <= pe; i ++)
-		result[query[0].second] += arr[i] * cnt[arr[i]];
+		result[pidx] += arr[i] * cnt[arr[i]];
 	
 	for(int i = 1; i < query.size(); i ++){
 		auto& [p, idx] = query[i];
 		auto& [s, e] = p;
+		result[idx] = result[pidx];
 		while(ps < s){
 			int cur = arr[ps];
+			result[idx] -= (2*cnt[cur]-1) * cur;
 			cnt[cur] --;
 			ps ++;
 		}
 		while(e < pe){
 			int cur = arr[pe];
+			result[idx] -= (2*cnt[cur]-1) * cur;
 			cnt[cur] --;
 			pe --;
 		}
 		while(pe < e){
 			pe ++;
 			int cur = arr[pe];
+			result[idx] += (2*cnt[cur]+1) * cur;
 			cnt[cur] ++;
 		}	
 		while(s < ps){
 			ps --;
 			int cur = arr[ps];
+			result[idx] += (2*cnt[cur]+1) * cur;
 			cnt[cur] ++;
 		}
-		for(int j = ps; j <= pe; j++)
-			result[idx] += cnt[arr[j]] * arr[j];
-		
+		pidx = idx;	
 	}
 
 

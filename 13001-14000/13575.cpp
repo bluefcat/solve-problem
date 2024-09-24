@@ -44,26 +44,25 @@ void fft(vector<complex>& f, bool inv){
 	}
 }
 
-void square(vector<complex>& x, int size){
-	fft(x, false);
-	for(int i = 0; i < size; i ++){
-		x[i] *= x[i];
-	}
-	fft(x, true);
-	for(int i = 0; i < size; i ++){
-		if(round(x[i].real()) != 0) x[i] = { 1, 0 };
-	}
-}
+void mul(vector<complex>& x, vector<complex>& y){
+	vector<complex> tmpx(x);
+	vector<complex> tmpy(y);
 
-void mul(vector<complex>& x, vector<complex>& y, int size){
-	fft(x, false); fft(y, false);
-	for(int i = 0; i < size; i ++){
-		x[i] *= y[i];
+	ll n = 1;
+	while(n <= tmpx.size() || n <= tmpy.size()) n <<= 1;
+	tmpx.resize(n);
+	tmpy.resize(n);
+
+	fft(tmpx, false); fft(tmpy, false);
+	for(int i = 0; i < n; i ++){
+		tmpx[i] *= tmpy[i];
 	}
-	fft(x, true); fft(y, true);
+	fft(tmpx, true); 
 	
-	for(int i = 0; i < size; i ++){
-		if(round(x[i].real()) != 0) x[i] = { 1, 0 };
+	x.resize(n);
+	for(int i = 0; i < n; i ++){
+		if(round(tmpx[i].real())) x[i] = { 1, 0 };
+		else x[i] = { 0, 0 };
 	}
 }
 
@@ -71,10 +70,7 @@ int main(){
 	int n, k;
 	int max_v, min_v;
 	scanf("%d %d", &n, &k);
-	ll size = 1;
-	while(N+1 > size) size <<= 1;
-	size <<= 1;
-	vector<complex> x(size, 0);
+	vector<complex> x(N, 0);
 	for(int i = 0; i < n; i ++){
 		int v;
 		scanf("%d", &v);
@@ -89,9 +85,8 @@ int main(){
 	vector<complex> r(x);
 	int p = k-1;
 	while(p){
-		if(p & 1)
-			mul(r, x, size);
-		square(x, size);
+		if(p & 1) mul(r, x);
+		mul(x, x);
 		p >>= 1;
 	}
 

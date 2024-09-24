@@ -4,10 +4,9 @@
 #include <algorithm>
 
 using complex = std::complex<double>;
-using ll = long long;
 using std::vector;
 
-constexpr double pi = 3.14159265358979;
+const double pi = std::acos(-1);
 constexpr int N = 1002;
 
 void fft(vector<complex>& f, bool inv){
@@ -44,11 +43,11 @@ void fft(vector<complex>& f, bool inv){
 	}
 }
 
-void mul(vector<int>& x, vector<int>& y){
+vector<int> mul(vector<int>& x, vector<int>& y){
 	vector<complex> tmpx(x.begin(), x.end());
 	vector<complex> tmpy(y.begin(), y.end());
 
-	ll n = 1;
+	int n = 1;
 	while(n <= tmpx.size() || n <= tmpy.size()) n <<= 1;
 	tmpx.resize(n);
 	tmpy.resize(n);
@@ -59,11 +58,11 @@ void mul(vector<int>& x, vector<int>& y){
 	}
 	fft(tmpx, true); 
 	
-	x.resize(n);
+	vector<int> result(n);
 	for(int i = 0; i < n; i ++){
-		if(round(tmpx[i].real())) x[i] = 1;
-		else x[i] = 0;
+		if(round(tmpx[i].real())) result[i] = 1;
 	}
+	return result;
 }
 
 int main(){
@@ -79,16 +78,15 @@ int main(){
 	vector<int> r(x);
 	int p = k-1;
 	while(p){
-		if(p & 1) mul(r, x);
-		mul(x, x);
+		if(p & 1) r = mul(r, x);
+		x = mul(x, x);
 		p >>= 1;
 	}
 
-	for(int i = 0; i <= r.size(); i ++){
+	for(int i = 0; i < r.size(); i ++){
 		if(r[i] != 0)
 			printf("%d ", i);
 	}
-	printf("\n");
 
 	return 0;
 }

@@ -10,26 +10,10 @@ using std::queue;
 constexpr int N = 10001;
 constexpr int M = 100001;
 
-unordered_map<int, unordered_map<int, bool>> check{};
-unordered_map<int, unordered_map<int, int>> graph{};
 
-template<typename T>
-bool find(T& rev, int cur, int c, int s, int k, int& result){
-	if(cur == s){
-		return c == k;
-	}
-	bool f = false;
-	for(auto& next: rev[cur]){
-		f |= find(rev, next, c+graph[next][cur], s, k, result);
-		if(f){
-			if(check[next][cur] != true) result ++;
-			check[next][cur] = true;
-		}
-	}
-	return f;
-}
 
 int main(){
+	unordered_map<int, unordered_map<int, int>> graph{};
 	unordered_map<int, vector<int>> paths{};
 	int degree[N] = { 0, };
 	//time
@@ -57,6 +41,7 @@ int main(){
 			degree[next] --;
 			
 			if(cache[next] <= t+cache[cur]){
+				if(cache[next] < t+cache[cur]) paths[next].clear();
 				cache[next] = t+cache[cur];
 				paths[next].push_back(cur);
 			}
@@ -66,10 +51,22 @@ int main(){
 		}
 	}
 	
+	unordered_map<int, unordered_map<int, bool>> check{};
 	int count = 0;
-	
-	find(paths, e, 0, s, cache[e], count);
+	while(!q.empty()) q.pop();
+	q.push(e);
+	while(!q.empty()){
+		int v = q.front(); q.pop();
+		if(v == s) break;
 
+		for(auto u: paths[v]){
+			if(check[u][v]) continue;
+			check[u][v] = true;
+			count ++;
+			q.push(u);
+		}
+	}
+	
 	printf("%d\n%d\n", cache[e], count);
 
 

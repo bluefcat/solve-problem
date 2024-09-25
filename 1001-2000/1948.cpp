@@ -2,7 +2,6 @@
 #include <unordered_map>
 #include <vector>
 #include <queue>
-#include <algorithm>
 
 using std::unordered_map;
 using std::vector;
@@ -11,9 +10,27 @@ using std::queue;
 constexpr int N = 10001;
 constexpr int M = 100001;
 
+unordered_map<int, unordered_map<int, bool>> check{};
+unordered_map<int, unordered_map<int, int>> graph{};
+
+template<typename T>
+bool find(T& rev, int cur, int c, int s, int k, int& result){
+	if(cur == s){
+		return c == k;
+	}
+	bool f = false;
+	for(auto& next: rev[cur]){
+		f |= find(rev, next, c+graph[next][cur], s, k, result);
+		if(f){
+			if(check[next][cur] != true) result ++;
+			check[next][cur] = true;
+		}
+	}
+	return f;
+}
+
 int main(){
-	unordered_map<int, unordered_map<int, int>> graph{};
-	unordered_map<int, vector<vector<int>>> paths{};
+	unordered_map<int, vector<int>> paths{};
 	int degree[N] = { 0, };
 	//time
 	int cache[N]{};
@@ -41,10 +58,7 @@ int main(){
 			
 			if(cache[next] <= t+cache[cur]){
 				cache[next] = t+cache[cur];
-				for(auto p: paths[cur]){
-					p.push_back(next);
-					paths[next].push_back(p);
-				}
+				paths[next].push_back(cur);
 			}
 
 			if(degree[next] == 0)
@@ -53,25 +67,8 @@ int main(){
 	}
 	
 	int count = 0;
-	unordered_map<int, unordered_map<int, bool>> check{};
-
-	for(auto& p: paths[e]){
-		int u = s;
-		int tmp = 0;
-		for(auto v: p){
-			if(u == v) continue;
-			tmp += graph[u][v];	
-			u = v;
-		}
-		if(cache[e] != tmp) continue;
-		u = s;
-		for(auto v: p){
-			if(u == v || check[u][v]) continue;
-			check[u][v] = true;
-			count ++;
-			u = v;
-		}
-	}
+	
+	find(paths, e, 0, s, cache[e], count);
 
 	printf("%d\n%d\n", cache[e], count);
 

@@ -1,45 +1,47 @@
 #include <cstdio>
 #include <algorithm>
-#include <utility>
+#include <unordered_map>
 
 using std::min;
-using pair = std::pair<int, int>;
+using std::unordered_map;
 
-constexpr int N = 21;
-pair cache[N][N];
+constexpr int N = 20;
+unordered_map<int, int> cache[N+1]{};
 
 int main(){
-	int field[N][N] = { 0, };
-	int n = 20;
+	int field[N+1][N] = { 0, };
+	int n;
 	scanf("%d", &n);
+	cache[0][0] = 0;
 	for(int i = 1; i <= n; i ++){
-		for(int j = 0; j < n; j ++)
+		for(int j = 0; j < n; j ++){
 			scanf("%d", field[i]+j);
+		}
 	}
 	
 	//employee
 	for(int i = 1; i <= n; i ++){
-		for(int j = 0; j < n; j ++){
-			auto [prev, flag] = cache[i-1][j];
-			//task
+		for(auto [flag, prev]: cache[i-1]){
 			for(int t = 0; t < n; t ++){
-				auto [cur, _] = cache[i][j];
-				if((flag & (1 << t)) == (1 << t)) continue;
-				if(cur != 0 && cur < prev + field[i][t])
-					continue;
-				cache[i][j] = {prev + field[i][t], flag ^ (1 << t)};
+				int task = (1 << t);
+				if((flag & task) == task) continue;
+				if(cache[i][flag | task] == 0)
+					cache[i][flag | task] = prev + field[i][t];
+				cache[i][flag | task] = min(
+					cache[i][flag | task],
+					prev + field[i][t]
+				);
 			}
+
 		}
 	}
-	
+
 	int result = 0;
-	for(int i = 0; i < n; i ++){
-		if(result != 0 && result < cache[n][i].first) continue;
-		result = cache[n][i].first;
+	for(auto [flag, prev]: cache[n]){
+		result = prev;
 	}
 
 	printf("%d\n", result);
-
 
 	return 0;
 }

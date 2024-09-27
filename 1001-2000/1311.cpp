@@ -1,14 +1,16 @@
 #include <cstdio>
 #include <algorithm>
+#include <utility>
 
 using std::min;
+using pair = std::pair<int, int>;
 
-constexpr int N = 20;
-int cache[N+1][1<<N];
+constexpr int N = 21;
+pair cache[N][N];
 
 int main(){
-	int field[N+1][N] = { 0, };
-	int n;
+	int field[N][N] = { 0, };
+	int n = 20;
 	scanf("%d", &n);
 	for(int i = 1; i <= n; i ++){
 		for(int j = 0; j < n; j ++)
@@ -17,27 +19,27 @@ int main(){
 	
 	//employee
 	for(int i = 1; i <= n; i ++){
-		for(int j = 0; j < (1 << N); j ++){
+		for(int j = 0; j < n; j ++){
+			auto [prev, flag] = cache[i-1][j];
 			//task
 			for(int t = 0; t < n; t ++){
-				if(!((j & (1 << t)) == (1 << t))) continue;
-				if(cache[i][j ^ (1 << t)] == 0){
-					cache[i][j ^ (1 << t)] = cache[i-1][j] + field[i][t];
-				}
-				cache[i][j ^ (1 << t)] = min(
-					cache[i][j ^ (1 << t)], 
-					cache[i-1][j] + field[i][t]
-				);
+				auto [cur, _] = cache[i][j];
+				if((flag & (1 << t)) == (1 << t)) continue;
+				if(cur != 0 && cur < prev + field[i][t])
+					continue;
+				cache[i][j] = {prev + field[i][t], flag ^ (1 << t)};
 			}
 		}
 	}
-
-	int result = cache[n][0];
-
-	//for(int i = 2; i <= n; i ++)
-	//	result = min(result, cache[i][(1<<n)-1]);
+	
+	int result = 0;
+	for(int i = 0; i < n; i ++){
+		if(result != 0 && result < cache[n][i].first) continue;
+		result = cache[n][i].first;
+	}
 
 	printf("%d\n", result);
+
 
 	return 0;
 }

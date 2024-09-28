@@ -14,6 +14,11 @@ int main(){
 	for(int i = 0; i < n; i ++)
 		scanf("%d", arr+i);
 
+	if(n == 1){
+		printf("1\n");
+		return 0;
+	}
+
 	int s = 0, e = -1;
 	int var = 0;
 	while(s != n-1){

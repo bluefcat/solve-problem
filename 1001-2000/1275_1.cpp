@@ -1,31 +1,29 @@
 #include <cstdio>
 #include <utility>
+#include <cassert>
 using lint = long long;
 
 constexpr int LN = 17;
 constexpr int N = 100001;
-constexpr int get_parent(int idx){ return (idx - 1) >> 1;}
-constexpr int get_left(int idx){ return (idx << 1) + 1;}
-constexpr int get_right(int idx){ return (idx << 1) + 2;}
 
 lint arr[N];
-lint tree[(1<<(LN+1))-1];
+lint tree[(1<<(LN+1))];
 
-void init(int size){
-	for(int i = (size >> 1), idx = 0; i < size; i ++, idx ++)
-		tree[i] = arr[idx];
+void init(int n, int size){
+	for(int i = 0; i < n; i ++)
+		tree[i+(size>>1)] = arr[i];
 	
-	for(int idx = (size >> 1)-1; idx >= 0; idx --)
-		tree[idx] = tree[get_left(idx)] + tree[get_right(idx)];
+	for(int idx = (size>>1)-1; idx > 0; idx --)
+		tree[idx] = tree[idx<<1] + tree[idx<<1|1];
 }
 
-void update(int size, int k, int v){
+void update(int size, int k, int diff){
 	int idx = (size>>1) + k;
-	tree[idx] += v;
+	tree[idx] += diff;
 
-	while(idx > 0){
-		idx = get_parent(idx);
-		tree[idx] += v;
+	while(idx>>1 != 0){
+		tree[idx>>1] = tree[idx] + tree[idx^1];
+		idx >>= 1;
 	}
 }
 
@@ -33,11 +31,11 @@ lint query(int size, int l, int r){
     lint result = 0;
 	int lidx = (size>>1) + l, ridx = (size>>1) + r;
 	while(lidx <= ridx){
-		if(!(lidx&1)) 
+		if(lidx&1) 
 			result += tree[lidx++];
-		if(ridx&1) result += tree[ridx--];
-		lidx = get_parent(lidx);
-		ridx = get_parent(ridx);
+		if(!(ridx&1)) result += tree[ridx--];
+		lidx >>= 1;
+		ridx >>= 1;
 	}
     return result;
 }
@@ -49,7 +47,7 @@ int main(){
 		scanf("%lld", arr+i);
 	int size = 1;
 	while(size < (n<<1)) size <<= 1;
-	init(size);
+	init(n, size);
 
 	for(int i = 0 ; i < q; i ++){
 		int x, y, a, b;

@@ -44,20 +44,20 @@ int main(){
 		}
 	}
 
+
 	for(int i = 0; i < n*n; i ++){
 		auto [y, x] = q.front(); q.pop();
 		for(auto& [dy, dx]: moving){
 			int nx = x + dx, ny = y + dy;
 			if(!isin(n, nx, ny)) continue;
-			if(field[y][x] > field[ny][nx]) continue;
+			if(field[y][x] >= field[ny][nx]) continue;
 			cache[ny][nx] = std::max(
 					cache[ny][nx], 
 					cache[y][x] + 1
 			);
 			result = std::max(result, cache[ny][nx]);
 			order[ny][nx] --;
-			if(order[ny][nx] == 0)
-				q.push({ny, nx});
+			if(order[ny][nx] == 0) q.push({ny, nx});
 		}
 	}
 	

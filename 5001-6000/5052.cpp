@@ -39,8 +39,10 @@ int main(){
 	while(T--){
 		idx = 0;
 		for(int i = 0; i < N; i ++)
-			for(int j = 0; j < 10; j ++)
+			for(int j = 0; j < 10; j ++){
 				nodes[i].next[j] = nullptr;
+				nodes[i].terminal = false;
+			}
 
 		int n; 
 		scanf("%d", &n);

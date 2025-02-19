@@ -31,24 +31,24 @@ Node* init(int l, int r, int idx){
 
 	int mid = lp->n + lp->r + rp->l + rp->n;
 
+	if(mid >= lp->n && mid >= rp->n){
+		tree[idx] = {
+			lp->l, mid, rp->r
+		};
+	}
 
-	if(lp->n > rp->n && lp->n > mid){
+	else if(lp->n > rp->n){
 		tree[idx] = {
 			lp->l, 
 			lp->n, 
-			lp->r + rp->l + rp->n + rp->r
-		};
-	}
-	else if(rp->n > mid){
-		tree[idx] = {
-			lp->l + lp->n + lp->r + rp->l,
-			rp->n,
-			rp->r
+			lp->r + (rp->l + rp->n + rp->r)
 		};
 	}
 	else{
 		tree[idx] = {
-			lp->l, mid, rp->r
+			(lp->l + lp->n + lp->r) + rp->l,
+			rp->n,
+			rp->r
 		};
 	}
 
@@ -57,19 +57,19 @@ Node* init(int l, int r, int idx){
 }
 
 Node query(int l, int r, int s, int e, int idx){
-	if(r < s || e < l) return {INT_MIN, 0, INT_MIN};
+	if(r < s || e < l) return {0, INT_MIN, 0};
 	if(s <= l && r <= e) return tree[idx];	
 	int m = (l + r) >> 1;
 	Node lp = query(l, m, s, e, left(idx));
 	Node rp = query(m+1, r, s, e, right(idx));
 	
-	if(lp.r == INT_MIN) return {rp.l, rp.n, rp.r};
-	if(rp.l == INT_MIN) return {lp.l, lp.n, lp.r};
+	if(lp.n == INT_MIN) return {rp.l, rp.n, rp.r};
+	if(rp.n == INT_MIN) return {lp.l, lp.n, lp.r};
 
 
 	int mid = lp.n + lp.r + rp.l + rp.n;
 	
-	if(mid > lp.n && mid > rp.n){
+	if(mid >= lp.n && mid >= rp.n){
 		return {
 			lp.l, mid, rp.r
 		};

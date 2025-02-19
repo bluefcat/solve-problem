@@ -31,7 +31,7 @@ Node* init(int l, int r, int idx){
 
 	int mid = lp->n + lp->r + rp->l + rp->n;
 
-	
+
 	if(lp->n > rp->n && lp->n > mid){
 		tree[idx] = {
 			lp->l, 
@@ -69,23 +69,24 @@ Node query(int l, int r, int s, int e, int idx){
 
 	int mid = lp.n + lp.r + rp.l + rp.n;
 	
-	if(lp.n > rp.n && lp.n > mid){
+	if(mid > lp.n && mid > rp.n){
+		return {
+			lp.l, mid, rp.r
+		};
+	}
+
+	else if(lp.n > rp.n){
 		return {
 			lp.l, 
 			lp.n, 
-			lp.r + rp.l + rp.n + rp.r
-		};
-	}
-	else if(rp.n > mid){
-		return {
-			lp.l + lp.n + lp.r + rp.l,
-			rp.n,
-			rp.r
+			lp.r + (rp.l + rp.n + rp.r)
 		};
 	}
 	else{
 		return {
-			lp.l, mid, rp.r
+			(lp.l + lp.n + lp.r) + rp.l,
+			rp.n,
+			rp.r
 		};
 	}
 

@@ -93,7 +93,7 @@ class Player{
 
 		void print(const char* header){
 #ifndef BOJ
-			printf("\033[2J\033[1;1H");
+			//printf("\033[2J\033[1;1H");
 			printf("[%5d] #%s\n", idx, header);
 			printf("pos (%lld %lld) v(%lld %lld)\n", x, y, vx, vy);
 			printf("(dash %lld jump %lld maxdrop %lld)\n", 
@@ -102,8 +102,9 @@ class Player{
 					quick, accel, weak, motion, rotate, depend);
 			printf("(1+%lld+5*%d)*(1+%d)*%lld*(1-%d) = %lld\n", dash, quick, accel, base_x, motion, _calc_vx());
 			printf("(base_g/(1+%d))\n", weak);
+			printf("____________________\n");
 			std::this_thread::sleep_for(
-				std::chrono::milliseconds(2000)
+				std::chrono::milliseconds(33)
 			);
 #endif
 		}
@@ -183,7 +184,6 @@ class Player{
 		}
 
 		bool calc_bundle(){
-			return false;
 			if(
 				this->is_dash() || 
 				motion != 0 ||
@@ -196,7 +196,6 @@ class Player{
 				return false;
 			
 			lint bundle = y / maxdrop + ((y % maxdrop) != 0);
-			printf("[%lld %lld]\n[%lld %lld]\n", x, y, bundle, _calc_vx());
 			y = 0;
 			x += bundle * _calc_vx();
 			return true;
@@ -364,6 +363,7 @@ class Bomb: public DurationUseable{
 		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
+			if(player.quick) player.quick = false;
 			player.motion = true;
 			player.vy = 0;
 		}
@@ -383,6 +383,7 @@ class Shield: public DurationUseable{
 		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
+			if(player.quick) player.quick = false;
 			player.motion = true;
 			player.vy = 0;
 		}
@@ -390,7 +391,7 @@ class Shield: public DurationUseable{
 		void done(Player& player) override {
 			player.motion = false;
 		}
-		lint get_duration() const override { return 2; }
+		lint get_duration() const override { return 30; }
 };
 
 class Potion: public DurationUseable{
@@ -400,6 +401,7 @@ class Potion: public DurationUseable{
 		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
+			if(player.quick) player.quick = false;
 			player.motion = true;
 			player.vy = 0;
 		}
@@ -477,6 +479,11 @@ int main(){
 	lint base_x, jump, maxdrop;
 	lint base_g, init_y;
 	lint N;
+	
+	base_x = 100, jump = 1, maxdrop=1;
+	base_g = 1, init_y = 1;
+	N = 990000;
+
 	scanf("%lld %lld %lld", &base_x, &jump, &maxdrop);
 	scanf("%lld %lld", &base_g, &init_y);
 	scanf("%lld", &N);
@@ -488,13 +495,23 @@ int main(){
 	player->maxdrop = maxdrop;
 
 	Game game{player, base_g, init_y};
+
+	char commands[11][11] = {
+		"acc", "ruda", "none", "none", "none", "none",
+		"none", "none", "none", "none", "none"
+	};
+
 	
 	while(N--){
 		char command[10] = { 0, };
 		scanf("%s", command);
 		game.update(std::string{command}, false);	
+		//game.update(std::string{commands[idx%11]}, false);
 		idx ++;
 	}
+
+	//game.update("ra", false);
+
 	
 	bool flag = true;
 	while(flag){

@@ -4,10 +4,17 @@
 #include <unordered_map>
 #include <tuple>
 
+#ifndef BOJ
+#include <chrono>
+#include <thread>
+#endif
+
 using lint = long long;
 using std::shared_ptr;
 using std::string;
 using std::unordered_map;
+
+int idx = 0;
 
 class Player;
 class Useable{
@@ -26,9 +33,9 @@ class DurationUseable: public Useable{
 class UseSlot{
 	private:
 		shared_ptr<Useable> _useable;
-		constexpr bool _can_use(const Player& player) const;
 		
 	public:
+		constexpr bool can_use(const Player& player) const;
 		void set(shared_ptr<Useable> useable);
 		void use(Player& player);
 };
@@ -37,8 +44,8 @@ class DurationSlot{
 	private:
 		shared_ptr<DurationUseable> _duration_useable;
 		lint _duration = 0;
-		constexpr bool _can_use(const Player& player) const;
 	public:
+		constexpr bool can_use(const Player& player) const;
 		void set(shared_ptr<DurationUseable> duration_useable);
 		void use(Player& player);
 		void update(Player& player);
@@ -69,10 +76,16 @@ class Player{
 				   (1 + accel) * base_x * 
 				   (1 - motion);
 		}
+		constexpr bool _can_use() const {
+			return !this->is_dash() && !this->motion;
+		};
 
 	public:
 
-		void print(){
+		void print(const char* header){
+#ifndef BOJ
+			printf("\033[2J\033[1;1H");
+			printf("[%5d] #%s\n", idx, header);
 			printf("pos (%lld %lld) v(%lld %lld)\n", x, y, vx, vy);
 			printf("(dash %lld jump %lld maxdrop %lld)\n", 
 					dash, jump, maxdrop);
@@ -80,6 +93,10 @@ class Player{
 					quick, accel, weak, motion, rotate, depend);
 			printf("(1+%lld+5*%d)*(1+%d)*%lld*(1-%d) = %lld\n", dash, quick, accel, base_x, motion, _calc_vx());
 			printf("(base_g/(1+%d))\n", weak);
+			std::this_thread::sleep_for(
+				std::chrono::milliseconds(33)
+			);
+#endif
 		}
 
 		constexpr bool is_dash() const {
@@ -124,6 +141,7 @@ class Player{
 			shared_ptr<Useable> useable,
 			shared_ptr<DurationUseable> duration_useable
 		){
+			if(!_can_use()) return;
 			if(useable){
 				useslot.set(useable);
 				useslot.use(*this);
@@ -156,7 +174,8 @@ class Player{
 			vy = std::max(-maxdrop, vy - g);
 		}
 
-		void calc_bundle(){
+		bool calc_bundle(){
+			return false;
 			if(
 				this->is_dash() || 
 				motion != 0 ||
@@ -166,16 +185,17 @@ class Player{
 				depend != false ||
 				vy != -maxdrop 
 			)
-				return;
+				return false;
 			
 			lint bundle = y / maxdrop + ((y % maxdrop) != 0);
-			//printf("pos [%lld %lld]\n(m, b, v) [%lld %lld %lld]\n", x, y, maxdrop, bundle, _calc_vx());
+			printf("[%lld %lld]\n[%lld %lld]\n", x, y, bundle, _calc_vx());
 			y = 0;
 			x += bundle * _calc_vx();
+			return true;
 		}
 };
 
-constexpr bool UseSlot::_can_use(const Player& player) const {
+constexpr bool UseSlot::can_use(const Player& player) const {
 	return (!player.is_dash()) && !(player.motion);
 }
 		
@@ -184,14 +204,10 @@ void UseSlot::set(shared_ptr<Useable> useable){
 }
 
 void UseSlot::use(Player& player){
-	if(!_can_use(player)){
-		return;
-	}
-
 	return _useable->use(player);
 };
 
-constexpr bool DurationSlot::_can_use(const Player& player) const {
+constexpr bool DurationSlot::can_use(const Player& player) const {
 	return (!player.is_dash()) && !(player.motion);
 }
 void DurationSlot::set(shared_ptr<DurationUseable> duration_useable){
@@ -200,17 +216,15 @@ void DurationSlot::set(shared_ptr<DurationUseable> duration_useable){
 }
 
 void DurationSlot::use(Player& player){
-	if(!_can_use(player)){ 
-		_duration = 0;
-		return;
-	}
 	return _duration_useable->use(player);
 }
 
 void DurationSlot::update(Player& player){
 	_duration --;
-	if(_duration <= 0)
+	if(_duration <= 0){
 		_duration_useable->done(player);
+		return;
+	}
 }
 
 bool DurationSlot::is_run(){
@@ -326,7 +340,9 @@ class Bomb: public DurationUseable{
 		void done(Player& player) override {
 			player.motion = false;
 		}
-		lint get_duration() const override { return 100; }
+		lint get_duration() const override { 
+			return 100; 
+		}
 };
 
 class Shield: public DurationUseable{
@@ -394,6 +410,7 @@ class Game{
 				_player->reduce_dash();
 				_player->update();
 			}
+			_player->print("<UPDATE>");
 			if(!idle){
 				auto [useable, is_duration] = _actions[key];
 				if(is_duration){
@@ -405,16 +422,17 @@ class Game{
 					_player->input(useable, nullptr);
 				}
 			}
-			{
+			_player->print("<INPUT>");
+			if(!idle || !_player->calc_bundle()){
 				_player->move_horizontal();
 				_player->move_vertical();
 			}
-			{
-				_player->calc_bundle();
-			}
+			
+			_player->print("<MOVE>");
 			{
 				_player->affect_gravity(_base_g);
 			}
+			_player->print("<DONE>");
 			return true;
 		};
 };
@@ -434,18 +452,20 @@ int main(){
 	player->maxdrop = maxdrop;
 
 	Game game{player, base_g, init_y};
-
+	
 	while(N--){
 		char command[10] = { 0, };
 		scanf("%s", command);
 		game.update(std::string{command}, false);	
+		idx ++;
 	}
 	
 	bool flag = true;
 	while(flag){
 		flag = game.update("none", true);
+		idx ++;
 	};
-
+	
 	printf("%lld\n", player->x);
 
 	return 0;

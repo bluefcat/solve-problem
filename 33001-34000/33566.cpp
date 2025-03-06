@@ -1,15 +1,12 @@
 #include <cstdio>
-#include <queue>
 #include <string>
 #include <memory>
-#include <vector>
 #include <unordered_map>
 #include <tuple>
 
 using lint = long long;
 using std::shared_ptr;
-using std::string, std::queue;
-using std::vector;
+using std::string;
 using std::unordered_map;
 
 class Player;
@@ -59,7 +56,7 @@ class Player{
 		lint maxdrop = 0;
 
 		bool quick = false, accel = false, weak = false, motion = false;
-		bool spin = false, depend = false;
+		bool rotate = false, depend = false;
 
 		lint x = 0, y = 0;
 		lint vx = 0, vy = 0;
@@ -74,18 +71,29 @@ class Player{
 		}
 
 	public:
+
+		void print(){
+			printf("pos (%lld %lld) v(%lld %lld)\n", x, y, vx, vy);
+			printf("(dash %lld jump %lld maxdrop %lld)\n", 
+					dash, jump, maxdrop);
+			printf("(quick %d accel %d weak %d motion %d rotate %d depend %d)\n",
+					quick, accel, weak, motion, rotate, depend);
+			printf("(1+%lld+5*%d)*(1+%d)*%lld*(1-%d) = %lld\n", dash, quick, accel, base_x, motion, _calc_vx());
+			printf("(base_g/(1+%d))\n", weak);
+		}
+
 		constexpr bool is_dash() const {
 			return (dash > 0);
 		}
 
 		constexpr bool is_landing() const {
-			return (y == 0) && !spin;
+			return (y == 0) && !rotate;
 		}
 
-		void set_spin(){
-			if(y == 0 && spin){
+		void set_rotate(){
+			if(y == 0 && rotate){
 				vy *= -1;
-				spin = false;
+				rotate = false;
 			} 
 		}
 
@@ -147,6 +155,24 @@ class Player{
 			lint g = (base_g / (1+weak));
 			vy = std::max(-maxdrop, vy - g);
 		}
+
+		void calc_bundle(){
+			if(
+				this->is_dash() || 
+				motion != 0 ||
+				quick != false ||
+				accel != false ||
+				weak != false ||
+				depend != false ||
+				vy != -maxdrop 
+			)
+				return;
+			
+			lint bundle = y / maxdrop + ((y % maxdrop) != 0);
+			//printf("pos [%lld %lld]\n(m, b, v) [%lld %lld %lld]\n", x, y, maxdrop, bundle, _calc_vx());
+			y = 0;
+			x += bundle * _calc_vx();
+		}
 };
 
 constexpr bool UseSlot::_can_use(const Player& player) const {
@@ -162,7 +188,6 @@ void UseSlot::use(Player& player){
 		return;
 	}
 
-	if(player.spin) player.spin = false;
 	return _useable->use(player);
 };
 
@@ -179,7 +204,6 @@ void DurationSlot::use(Player& player){
 		_duration = 0;
 		return;
 	}
-	if(player.spin) player.spin = false;
 	return _duration_useable->use(player);
 }
 
@@ -203,6 +227,7 @@ class None: public Useable{
 class Dash: public Useable{
 	public:
 		void use(Player& player) override {
+			if(player.rotate) player.rotate = false;
 			if(player.quick) player.quick = false;
 			player.set_dash(5);
 			player.vy = 0;
@@ -212,6 +237,7 @@ class Dash: public Useable{
 class AirJump: public Useable{
 	public:
 		void use(Player& player) override {
+			if(player.rotate) player.rotate = false;
 			player.vy = player.jump;
 		}
 };
@@ -219,19 +245,20 @@ class AirJump: public Useable{
 class QuickDrop: public Useable{
 	public:
 		void use(Player& player) override {
+			if(player.rotate) player.rotate = false;
 			player.quick = true;
 			player.vy = -player.maxdrop;
 		}
 };
 
 //attack skill
-class SpinAttack: public Useable{
+class RotateAttack: public Useable{
 	private:
 		int count = 1;
 	public:
 		void use(Player& player) override {
 			if(count == 0) return;
-			player.spin = true;
+			player.rotate = true;
 			count --;
 		}
 };
@@ -239,6 +266,7 @@ class SpinAttack: public Useable{
 class HorizontalAttak: public Useable{
 	public:
 		void use(Player& player) override {
+			if(player.rotate) player.rotate = false;
 			if(player.quick) player.quick = false;
 			player.set_dash(5);
 			player.vy = 0;
@@ -248,6 +276,7 @@ class HorizontalAttak: public Useable{
 class UpwardAttack: public Useable{
 	public:
 		void use(Player& player) override {
+			if(player.rotate) player.rotate = false;
 			if(player.quick) player.quick = false;
 			player.set_dash(5);
 			player.depend = true;
@@ -257,6 +286,7 @@ class UpwardAttack: public Useable{
 class Accelate: public DurationUseable{
 	public:
 		void use(Player& player) override {
+			if(player.rotate) player.rotate = false;
 			player.accel = true;	
 		}
 
@@ -272,6 +302,7 @@ class Accelate: public DurationUseable{
 class GravityWeak: public DurationUseable{
 	public:
 		void use(Player& player) override {
+			if(player.rotate) player.rotate = false;
 			player.weak = true;
 		}
 
@@ -287,6 +318,7 @@ class GravityWeak: public DurationUseable{
 class Bomb: public DurationUseable{
 	public:
 		void use(Player& player) override {
+			if(player.rotate) player.rotate = false;
 			player.motion = true;
 			player.vy = 0;
 		}
@@ -300,6 +332,7 @@ class Bomb: public DurationUseable{
 class Shield: public DurationUseable{
 	public:
 		void use(Player& player) override {
+			if(player.rotate) player.rotate = false;
 			player.motion = true;
 			player.vy = 0;
 		}
@@ -313,6 +346,7 @@ class Shield: public DurationUseable{
 class Potion: public DurationUseable{
 	public:
 		void use(Player& player) override {
+			if(player.rotate) player.rotate = false;
 			player.motion = true;
 			player.vy = 0;
 		}
@@ -334,7 +368,7 @@ class Game{
 			{"d", {std::make_shared<Dash>(), false}},
 			{"aj", {std::make_shared<AirJump>(), false}},
 			{"qd", {std::make_shared<QuickDrop>(), false}},
-			{"ra", {std::make_shared<SpinAttack>(), false}},
+			{"ra", {std::make_shared<RotateAttack>(), false}},
 			{"hda", {std::make_shared<HorizontalAttak>(), false}},
 			{"ruda", {std::make_shared<UpwardAttack>(), false}},
 			{"acc", {std::make_shared<Accelate>(), true}},
@@ -349,18 +383,18 @@ class Game{
 			player->y = init_y;	
 		}
 
-		bool update(const std::string key){
+		bool update(const std::string key, bool idle){
 
 			if(_player->is_landing()){
 				return false;
 			}
 
 			{
-				_player->set_spin();
+				_player->set_rotate();
 				_player->reduce_dash();
 				_player->update();
 			}
-			{
+			if(!idle){
 				auto [useable, is_duration] = _actions[key];
 				if(is_duration){
 					_player->input(
@@ -373,9 +407,10 @@ class Game{
 			}
 			{
 				_player->move_horizontal();
+				_player->move_vertical();
 			}
 			{
-				_player->move_vertical();
+				_player->calc_bundle();
 			}
 			{
 				_player->affect_gravity(_base_g);
@@ -399,14 +434,16 @@ int main(){
 	player->maxdrop = maxdrop;
 
 	Game game{player, base_g, init_y};
-	
-	int idx = 0;
+
 	while(N--){
 		char command[10] = { 0, };
 		scanf("%s", command);
-		game.update(std::string{command});	
+		game.update(std::string{command}, false);	
 	}
-	while(game.update("none")){
+	
+	bool flag = true;
+	while(flag){
+		flag = game.update("none", true);
 	};
 
 	printf("%lld\n", player->x);

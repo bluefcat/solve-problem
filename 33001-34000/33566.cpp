@@ -19,11 +19,13 @@ int idx = 0;
 class Player;
 class Useable{
 	public:
+		virtual const std::string get_name() const = 0;
 		virtual void use(Player&) = 0;
 };
 
 class DurationUseable: public Useable{
 	public:
+		virtual const std::string get_name() const = 0;
 		virtual void use(Player&) = 0;
 		virtual void done(Player&) = 0;
 		virtual lint get_duration() const = 0;
@@ -35,7 +37,6 @@ class UseSlot{
 		shared_ptr<Useable> _useable;
 		
 	public:
-		constexpr bool can_use(const Player& player) const;
 		void set(shared_ptr<Useable> useable);
 		void use(Player& player);
 };
@@ -45,7 +46,6 @@ class DurationSlot{
 		shared_ptr<DurationUseable> _duration_useable;
 		lint _duration = 0;
 	public:
-		constexpr bool can_use(const Player& player) const;
 		void set(shared_ptr<DurationUseable> duration_useable);
 		void use(Player& player);
 		void update(Player& player);
@@ -69,7 +69,16 @@ class Player{
 		lint vx = 0, vy = 0;
 		
 		UseSlot useslot{};
-		DurationSlot duration_useslots[100];
+		unordered_map<
+			std::string, std::shared_ptr<DurationSlot>
+		> 
+		duration_useslots{
+			{"Accelate", std::make_shared<DurationSlot>()},
+			{"GravityWeak", std::make_shared<DurationSlot>()},
+			{"Bomb", std::make_shared<DurationSlot>()},
+			{"Shield", std::make_shared<DurationSlot>()},
+			{"Potion", std::make_shared<DurationSlot>()},
+		};
 
 		lint _calc_vx(){
 			return (1 + dash + 5 * quick) * 
@@ -94,7 +103,7 @@ class Player{
 			printf("(1+%lld+5*%d)*(1+%d)*%lld*(1-%d) = %lld\n", dash, quick, accel, base_x, motion, _calc_vx());
 			printf("(base_g/(1+%d))\n", weak);
 			std::this_thread::sleep_for(
-				std::chrono::milliseconds(33)
+				std::chrono::milliseconds(2000)
 			);
 #endif
 		}
@@ -133,8 +142,8 @@ class Player{
 		}
 
 		void update(){
-			for(auto& du: duration_useslots)
-				if(du.is_run()) du.update(*this);
+			for(auto& [key, du]: duration_useslots)
+				if(du->is_run()) du->update(*this);
 		}
 
 		void input(
@@ -148,10 +157,9 @@ class Player{
 			}
 			if(duration_useable){
 				int idx = 0;
-				for(;duration_useslots[idx].is_run(); idx++);
-				auto& du = duration_useslots[idx];
-				du.set(duration_useable);
-				du.use(*this);
+				auto ds = duration_useslots[duration_useable->get_name()];
+				ds->set(duration_useable);
+				ds->use(*this);
 			}
 		}
 
@@ -195,10 +203,6 @@ class Player{
 		}
 };
 
-constexpr bool UseSlot::can_use(const Player& player) const {
-	return (!player.is_dash()) && !(player.motion);
-}
-		
 void UseSlot::set(shared_ptr<Useable> useable){
 	_useable = useable;
 }
@@ -207,9 +211,6 @@ void UseSlot::use(Player& player){
 	return _useable->use(player);
 };
 
-constexpr bool DurationSlot::can_use(const Player& player) const {
-	return (!player.is_dash()) && !(player.motion);
-}
 void DurationSlot::set(shared_ptr<DurationUseable> duration_useable){
 	_duration_useable = duration_useable;
 	_duration = duration_useable->get_duration();
@@ -228,11 +229,14 @@ void DurationSlot::update(Player& player){
 }
 
 bool DurationSlot::is_run(){
-	return _duration > 0;
+	return _duration_useable != nullptr && _duration > 0;
 }
 
 class None: public Useable{
 	public:
+		const std::string get_name() const override {
+			return "None";
+		}
 		void use(Player& player) override {
 		}
 };
@@ -240,6 +244,9 @@ class None: public Useable{
 //move skill
 class Dash: public Useable{
 	public:
+		const std::string get_name() const override {
+			return "Dash";
+		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
 			if(player.quick) player.quick = false;
@@ -250,6 +257,9 @@ class Dash: public Useable{
 
 class AirJump: public Useable{
 	public:
+		const std::string get_name() const override {
+			return "AirJump";
+		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
 			player.vy = player.jump;
@@ -258,6 +268,9 @@ class AirJump: public Useable{
 
 class QuickDrop: public Useable{
 	public:
+		const std::string get_name() const override {
+			return "QuickDrop";
+		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
 			player.quick = true;
@@ -270,6 +283,9 @@ class RotateAttack: public Useable{
 	private:
 		int count = 1;
 	public:
+		const std::string get_name() const override {
+			return "RotateAttack";
+		}
 		void use(Player& player) override {
 			if(count == 0) return;
 			player.rotate = true;
@@ -277,8 +293,11 @@ class RotateAttack: public Useable{
 		}
 };
 
-class HorizontalAttak: public Useable{
+class HorizontalAttack: public Useable{
 	public:
+		const std::string get_name() const override {
+			return "HorizontalAttack";
+		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
 			if(player.quick) player.quick = false;
@@ -289,6 +308,9 @@ class HorizontalAttak: public Useable{
 
 class UpwardAttack: public Useable{
 	public:
+		const std::string get_name() const override {
+			return "UpwardAttack";
+		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
 			if(player.quick) player.quick = false;
@@ -299,6 +321,9 @@ class UpwardAttack: public Useable{
 
 class Accelate: public DurationUseable{
 	public:
+		const std::string get_name() const override {
+			return "Accelate";
+		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
 			player.accel = true;	
@@ -315,6 +340,9 @@ class Accelate: public DurationUseable{
 
 class GravityWeak: public DurationUseable{
 	public:
+		const std::string get_name() const override {
+			return "GravityWeak";
+		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
 			player.weak = true;
@@ -331,6 +359,9 @@ class GravityWeak: public DurationUseable{
 
 class Bomb: public DurationUseable{
 	public:
+		const std::string get_name() const override {
+			return "Bomb";
+		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
 			player.motion = true;
@@ -347,6 +378,9 @@ class Bomb: public DurationUseable{
 
 class Shield: public DurationUseable{
 	public:
+		const std::string get_name() const override {
+			return "Shield";
+		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
 			player.motion = true;
@@ -356,11 +390,14 @@ class Shield: public DurationUseable{
 		void done(Player& player) override {
 			player.motion = false;
 		}
-		lint get_duration() const override { return 30; }
+		lint get_duration() const override { return 2; }
 };
 
 class Potion: public DurationUseable{
 	public:
+		const std::string get_name() const override {
+			return "Potion";
+		}
 		void use(Player& player) override {
 			if(player.rotate) player.rotate = false;
 			player.motion = true;
@@ -376,7 +413,6 @@ class Potion: public DurationUseable{
 class Game{
 	private:
 		shared_ptr<Player> _player;
-		//queue<string> _commands{};
 		lint _base_g;
 
 		unordered_map<string, std::tuple<shared_ptr<Useable>, bool>> _actions{
@@ -385,7 +421,7 @@ class Game{
 			{"aj", {std::make_shared<AirJump>(), false}},
 			{"qd", {std::make_shared<QuickDrop>(), false}},
 			{"ra", {std::make_shared<RotateAttack>(), false}},
-			{"hda", {std::make_shared<HorizontalAttak>(), false}},
+			{"hda", {std::make_shared<HorizontalAttack>(), false}},
 			{"ruda", {std::make_shared<UpwardAttack>(), false}},
 			{"acc", {std::make_shared<Accelate>(), true}},
 			{"gw", {std::make_shared<GravityWeak>(), true}},

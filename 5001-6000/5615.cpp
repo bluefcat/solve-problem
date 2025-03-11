@@ -1,5 +1,5 @@
 #include <cstdio>
-using ll = long long;
+using ll = unsigned long long;
 
 ll pow(ll b, ll e, ll m){
 	b %= m;
@@ -23,9 +23,9 @@ bool rabin(ll p, ll x){
 }
 
 bool is_prime(ll x){
-	ll p[] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
-	for(int i = 0; i < 12; i ++) if(p[i] == x) return true;
-	for(int i = 0; i < 12; i ++){
+	ll p[] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 61};
+	for(int i = 0; i < 13; i ++) if(p[i] == x) return true;
+	for(int i = 0; i < 13; i ++){
 		if(rabin(p[i], x) == false) return false;
 	}
 	return true;

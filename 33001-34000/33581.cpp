@@ -7,7 +7,7 @@ int main(){
 	int n, k;
 	scanf("%d %d", &n, &k);
 	
-	if(n == 2 && k == 1){
+	if(n == k+1){
 		printf("-1\n");
 		return 0;
 	}

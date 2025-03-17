@@ -21,6 +21,7 @@ int main(){
 	unordered_map<lint, lint> hmap{};
 
 	scanf("%lld %lld", &x, &N);
+
 	
 	lint turtle = x;
 	lint rabbit = x;
@@ -57,6 +58,7 @@ int main(){
 		return 0;
 	}
 
-	printf("%lld\n", hmap[N % head.size()]);
+
+	printf("%lld\n", hmap[(N-tail.size()) % head.size()]);
 	return 0;
 }

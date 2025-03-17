@@ -2,18 +2,23 @@
 #include <algorithm>
 
 constexpr int N = 51;
+int left_id = 0, right_id = 1;
 
-constexpr int get_left(int x){
-	return (x << 1) + 1;
+int get_left(int x){
+	left_id ++;
+	while(left_id == right_id) left_id ++;
+	return left_id;
 }
 
-constexpr int get_right(int x){
-	return (x << 1) + 2;
+int get_right(int x){
+	right_id ++;
+	while(left_id == right_id) right_id ++;
+	return right_id;
 }
 
 int main(){
 	int cnt[N] = { 0, };
-	int idx[N*1000*4] = { 0, };
+	int idx[N*10000*4] = { 0, };
 
 	int n;
 	scanf("%d", &n);

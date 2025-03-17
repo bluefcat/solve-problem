@@ -2,7 +2,7 @@
 #include <algorithm>
 
 constexpr int N = 51;
-int left_id = 0, right_id = 1;
+int left_id = 1, right_id = 2;
 
 int get_left(int x){
 	left_id ++;
@@ -25,7 +25,7 @@ int main(){
 	for(int i = 1; i <= n; i ++)
 		scanf("%d", cnt+i);
 	
-	int c = 0, l = 0, r = 0;
+	int  l = 0, r = 0;
 	
 	for(int i = 1; i <= n; i ++){
 		if(cnt[i] != 1){
@@ -40,21 +40,26 @@ int main(){
 			continue;
 		}
 		if(l != r){
-			l = get_left(l);
-			idx[l] = i;
+			if(idx[l] == i-1){
+				l = get_left(l);
+				idx[l] = i;
+			}
+			else{
+				r = get_right(r);
+				idx[r] = i;
+			}
 		}
 		else{
-			c = get_left(c);
-			l = c;
-			r = c;
-			idx[c] = i;
+			l = 0;
+			r = 0;
+			idx[0] = i;
 		}
 	}
 	
 	int result = std::max({
 		idx[l],
 		idx[r],
-		idx[r] - idx[c] + idx[l] - idx[c]
+		idx[r] - idx[0] + idx[l] - idx[0]
 	});
 	
 	printf("%d\n", result);

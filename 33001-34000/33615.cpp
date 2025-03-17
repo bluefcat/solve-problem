@@ -27,10 +27,10 @@ int main(){
 		else if(s % 3 == 2 && fp != -1){
 			printf("%d 3\n", fp);
 		}
-		else if(s % 3 == 1 && op != -1){
+		else if(s % 3 == 1){
 			printf("%d 3\n", op);
 		}
-		else if(s % 3 == 2 && fp == -1){
+		else if(s % 2 && fp == -1){
 			printf("%d 11\n", op);
 		}
 		else {

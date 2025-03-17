@@ -7,8 +7,17 @@ int main(){
 	int n, k;
 	scanf("%d %d", &n, &k);
 	
-	if(n == k+1){
+	if(n <= 4 && n == k+1){
 		printf("-1\n");
+		return 0;
+	}
+
+	if(n == k+1){
+		printf("1 %d ", k);
+		for(int i = 3; i<= k-1; i ++){
+			printf("%d ", i);
+		}
+		printf("2 %d\n", k+1);
 		return 0;
 	}
 

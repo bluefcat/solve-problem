@@ -46,7 +46,7 @@ int main(){
 	int n;
 	scanf("%d", &n);
 
-	for(int i = 0; i < n; i ++) tester[i] = to_char[0];
+	for(int i = 0; i < n; i ++) tester[i] = to_char[rand() % 3];
 	
 	char target[N] = { 0, };
 	int need[3] = { 0, };
@@ -59,34 +59,57 @@ int main(){
 			only[i][j] = to_char[i];
 	}
 	
+	char tmp[N] = { 0, };
 	for(int i = 0; i < 3; i ++){
 		auto [w, d, l] = query(only[i]);
 		need[to_num[only[i][0]]] = w;
 		if(d != -1) command[d-1] = beat[only[i][0]];
 		if(l != -1) command[l-1] = beat[beat[only[i][0]]];
-	}
-
-	char tmp[N] = { 0, };
-	for(int i = 0; i < 130; i ++){
-		for(int j = 0; j < 3; j ++){
-			for(int k = 0; k < n; k ++){
-				if(command[k] != 0)
-					tmp[k] = command[k];
-				else
-					tmp[k] = to_char[j];
-			}
-
-			auto [w, d, l] = query(tmp);
-			if(d != -1) command[d-1] = beat[tmp[d-1]];
-			if(l != -1) command[l-1] = beat[beat[tmp[l-1]]];
-
-			if(d == -1 && l == -1){
-				for(int q = 0; q < n; q++)
-					command[q] = tmp[q];
-				goto ANSWER;
-			}
+		if(w == n){
+			for(int q = 0; q < n; q++)
+				command[q] = only[i][q];
+			goto ANSWER;
 		}
 	}
+
+	for(int i = 0; i < 415; i ++){
+		for(int k = 0; k < n; k ++){
+			int used[3] = { 0, };
+			if(command[k] != 0)
+				tmp[k] = command[k];
+			else{
+				if(need[0] - used[0] > 0){
+					tmp[k] = to_char[0];
+					used[0] ++;
+				} 
+				else if(need[1] - used[1] > 0){
+					tmp[k] = to_char[1];
+					used[1] ++;
+				}
+				else{
+					tmp[k] = to_char[2];
+					used[2] ++;
+
+				}
+			}
+		}
+
+		auto [w, d, l] = query(tmp);
+		if(d != -1){ 
+			command[d-1] = beat[tmp[d-1]];
+			need[beat[tmp[d-1]]] --;
+		}
+		if(l != -1){
+			command[l-1] = beat[beat[tmp[l-1]]];
+			need[beat[beat[tmp[l-1]]]] --;
+		}
+		if(w == n){
+			for(int q = 0; q < n; q++)
+				command[q] = tmp[q];
+			goto ANSWER;
+		}
+	}
+
 ANSWER:
 	printf("> %s\n", tester);
 	printf("%c %s\n", '!', command);

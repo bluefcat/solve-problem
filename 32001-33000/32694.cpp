@@ -4,10 +4,10 @@ using lint = long long;
 
 constexpr lint MOD = 1234543;
 
-lint fact[MOD+1] = { 1, };
+lint fact[MOD+2] = { 1, };
 
 void prefact(){
-	for(int i = 1; i < MOD+1; i ++){
+	for(int i = 1; i < MOD+2; i ++){
 		fact[i] = (fact[i-1] * i) % MOD;
 	}
 }
@@ -19,7 +19,7 @@ lint mpow(lint x, lint e, lint m){
 		x = (x * x) % m;
 		e >>= 1;
 	}
-	return result;
+	return result % m;
 }
 
 int main(){
@@ -34,16 +34,15 @@ int main(){
 		lint result = 1;
 		
 		lint n = w+b-1, m = b;
-		while(n | m){
-			if(m > n){
+		while(n > 0 && m > 0){
+			if((m % MOD) > (n % MOD) || 0 == (m % MOD)){
 				result = 0;
 				break;
 			}
 			result = (
-				result * 
-				fact[n % MOD] * 
-				mpow(fact[(n-m)], MOD-2, MOD) *
-				mpow(fact[m], MOD-2, MOD)
+				((((result * fact[n % MOD]) % MOD) * 
+				mpow(fact[((n % MOD)-(m % MOD)) % MOD], MOD-2, MOD)) % MOD) *
+				mpow(fact[m % MOD], MOD-2, MOD)
 			)%MOD;	
 			n /= MOD;
 			m /= MOD;

@@ -51,7 +51,7 @@ int main(){
 	}
 
 	char tmp[N] = { 0, };
-	for(int i = 0; i < 130; i ++){
+	for(int i = 0; i < 139; i ++){
 		for(int j = 0; j < 3; j ++){
 			for(int k = 0; k < n; k ++){
 				if(command[k] != 0)
@@ -63,8 +63,15 @@ int main(){
 			auto [w, d, l] = query(tmp);
 			if(d != -1) command[d-1] = beat[tmp[d-1]];
 			if(l != -1) command[l-1] = beat[beat[tmp[l-1]]];
+			if(d == -1 && l == -1){
+				for(int q = 0; q < n; q++)
+					command[q] = tmp[q];
+				goto ANSWER;
+			}
 		}
 	}
+
+ANSWER:
 	printf("%c %s\n", '!', command);
 
 	return 0;

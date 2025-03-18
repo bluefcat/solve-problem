@@ -46,7 +46,7 @@ int main(){
 	int n;
 	scanf("%d", &n);
 
-	for(int i = 0; i < n; i ++) tester[i] = to_char[rand()%3];
+	for(int i = 0; i < n; i ++) tester[i] = to_char[0];
 	
 	char target[N] = { 0, };
 	int need[3] = { 0, };
@@ -79,8 +79,15 @@ int main(){
 			auto [w, d, l] = query(tmp);
 			if(d != -1) command[d-1] = beat[tmp[d-1]];
 			if(l != -1) command[l-1] = beat[beat[tmp[l-1]]];
+
+			if(d == -1 && l == -1){
+				for(int q = 0; q < n; q++)
+					command[q] = tmp[q];
+				goto ANSWER;
+			}
 		}
 	}
+ANSWER:
 	printf("> %s\n", tester);
 	printf("%c %s\n", '!', command);
 	

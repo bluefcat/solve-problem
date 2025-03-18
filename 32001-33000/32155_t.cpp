@@ -46,7 +46,7 @@ int main(){
 	int n;
 	scanf("%d", &n);
 
-	for(int i = 0; i < n; i ++) tester[i] = to_char[rand() % 3];
+	for(int i = 0; i < n; i ++) tester[i] = to_char[i%3];
 	
 	char target[N] = { 0, };
 	int need[3] = { 0, };

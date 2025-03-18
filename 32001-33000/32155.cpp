@@ -73,7 +73,6 @@ int main(){
 				else{
 					tmp[k] = to_char[2];
 					used[2] ++;
-
 				}
 			}
 		}

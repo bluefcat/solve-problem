@@ -17,6 +17,7 @@ lint mpow(lint x, lint e, lint m){
 
 int main(){
 	lint n, m, nume = 0, deno = 1;
+
 	char x[M] = { 0, };
 	scanf("%lld %lld", &n, &m);
 	scanf("%s", x);
@@ -34,14 +35,15 @@ int main(){
 	}
 
 	lint place = 1;
-	lint count = mpow(2, (n-1)*(m-1), MOD);
+	lint count = mpow(2, n-1, MOD);
+	count = mpow(count, m-1, MOD);
 
-	lint tp = mpow(2, n-2, MOD);
+	lint tp = (n * mpow(2, n-2, MOD)) % MOD; //sum r * (n r)
 
 	for(int i = 0; i < m; i ++){
 		if(i > 0) place = (place << 1) % MOD;
-		lint tmp = (count * (n * tp) % MOD) % MOD; //sum r * (n r)
-		nume +=(tmp * place) % MOD;
+		lint tmp = (count * tp) % MOD;
+		nume += (tmp * place) % MOD;
 	}
 	deno = mpow(2, (n-1) * m, MOD);
 	

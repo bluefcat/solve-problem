@@ -36,9 +36,11 @@ int main(){
 	lint place = 1;
 	lint count = mpow(2, (n-1)*(m-1), MOD);
 
+	lint tp = mpow(2, n-2, MOD);
+
 	for(int i = 0; i < m; i ++){
 		if(i > 0) place = (place << 1) % MOD;
-		lint tmp = (count * (n * mpow(2, n-2, MOD)) % MOD) % MOD; //sum r * (n r)
+		lint tmp = (count * (n * tp) % MOD) % MOD; //sum r * (n r)
 		nume +=(tmp * place) % MOD;
 	}
 	deno = mpow(2, (n-1) * m, MOD);

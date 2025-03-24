@@ -1,6 +1,5 @@
 #include <cstdio>
 #include <utility>
-#include <algorithm>
 
 constexpr int N = 200002;
 
@@ -29,6 +28,7 @@ int main(){
 		}
 		
 		int left = 0, right = 0;
+
 		for(int i = r.first; i <= student; i ++)
 			left += w[i];
 
@@ -36,10 +36,14 @@ int main(){
 			right += w[i];
 
 		if(left <= right){
+			for(int i = r.first; i <= student; i ++)
+				w[i] = 0;
 			result[i] = left;
 			r.first = student+1;
 		}
 		else{
+			for(int i = student; i <= r.second; i ++)
+				w[i] = 0;
 			result[i] = right;
 			r.second = student-1;
 		}

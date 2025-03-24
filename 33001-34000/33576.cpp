@@ -33,11 +33,22 @@ int main(){
 		}
 		
 		lint left = w[student] - w[r.first-1];
-		lint right = w[r.second] - w[student];
+		lint right = w[r.second] - w[student-1];
 		
-		if(left <= right){
+		if(left < right){
 			result[i] = left;
 			r.first = student;
+		}
+		else if(left == right){
+			result[i] = left;
+			
+			if(student - 1 > n-student){
+				r.second = student;
+			}
+			else{
+				r.first = student;
+			}
+
 		}
 		else{
 			result[i] = right;

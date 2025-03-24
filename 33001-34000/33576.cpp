@@ -1,22 +1,27 @@
 #include <cstdio>
 #include <utility>
+#include <unordered_map>
 
+using lint = long long;
 constexpr int N = 200002;
 
 int main(){
 	int n, m, q;
-	int w[N] = { 0, };
-	int result[N] = { 0, };
+	lint w[N] = { 0, };
+	lint result[N] = { 0, };
 
 	scanf("%d %d %d", &n, &m, &q);
 	
-	std::pair<int, int> r{1, N};
+	std::pair<int, int> r{1, n};
 
 	for(int i = 0; i < m; i ++){
-		int idx = 0, d = 0;
-		scanf("%d %d", &idx, &d);
+		int idx = 0; lint d = 0;
+		scanf("%d %lld", &idx, &d);
 		w[idx] = d;
 	}
+
+	for(int i = 1; i <= n; i ++)
+		w[i] += w[i-1];
 	
 	for(int i = 0; i < q; i ++){
 		int student = 0;
@@ -27,32 +32,22 @@ int main(){
 			continue;
 		}
 		
-		int left = 0, right = 0;
-
-		for(int i = r.first; i <= student; i ++)
-			left += w[i];
-
-		for(int i = student; i <= r.second; i ++)
-			right += w[i];
-
+		lint left = w[student] - w[r.first-1];
+		lint right = w[r.second] - w[student];
+		
 		if(left <= right){
-			for(int i = r.first; i <= student; i ++)
-				w[i] = 0;
 			result[i] = left;
-			r.first = student+1;
+			r.first = student;
 		}
 		else{
-			for(int i = student; i <= r.second; i ++)
-				w[i] = 0;
 			result[i] = right;
-			r.second = student-1;
+			r.second = student;
 		}
 	}
 
 
-
 	for(int i = 0; i < q; i ++)
-		printf("%d\n", result[i]);
+		printf("%lld\n", result[i]);
 
 	return 0;
 }

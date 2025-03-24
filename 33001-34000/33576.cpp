@@ -2,7 +2,7 @@
 #include <utility>
 #include <algorithm>
 
-constexpr int N = 100001;
+constexpr int N = 200002;
 
 int main(){
 	int n, m, q;
@@ -11,14 +11,12 @@ int main(){
 
 	scanf("%d %d %d", &n, &m, &q);
 	
-	std::pair<int, int> r{N+1, -1};
+	std::pair<int, int> r{1, N};
 
 	for(int i = 0; i < m; i ++){
 		int idx = 0, d = 0;
 		scanf("%d %d", &idx, &d);
 		w[idx] = d;
-		r.first = std::min(r.first, idx);
-		r.second = std::max(r.second, idx);
 	}
 	
 	for(int i = 0; i < q; i ++){

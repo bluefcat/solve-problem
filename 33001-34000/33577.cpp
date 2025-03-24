@@ -1,5 +1,4 @@
 #include <cstdio>
-#include <algorithm>
 
 using lint = long long;
 constexpr int N = 100002;
@@ -15,7 +14,8 @@ int main(){
 	}
 
 
-	int k = 1, result = 0;
+	int k = 1;
+	lint result = 0;
 	lint m = 0;
 	for(int i = 1; i <= n; i ++){
 		if(A[i] - S[i-1] > A[k] - S[k-1]) k = i;
@@ -30,7 +30,7 @@ int main(){
 		}
 	}
 
-	printf("%d\n", result);
+	printf("%lld\n", result);
 
 	return 0;
 }

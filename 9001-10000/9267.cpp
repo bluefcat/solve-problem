@@ -42,6 +42,7 @@ int main(){
 		x -= cnt * b/g;
 		y += cnt * a/g;
 	}
+	printf("%lld %lld\n", (ll)x, (ll)y);
 	if(((x > 0 && y > 0) || (x == 1 && y == 0) || (x == 0 && y == 1)) && (lll)a*x+(lll)b*y == (lll)S){
 		printf("YES\n");
 	}

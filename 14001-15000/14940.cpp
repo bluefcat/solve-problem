@@ -6,9 +6,10 @@ using std::queue;
 
 constexpr int N = 1001;
 
-	int m[N][N] = { 0, };
-	int r[N][N] = { 0, };
-	bool vi[N][N] = { false, };
+int m[N][N] = { 0, };
+int r[N][N] = { 0, };
+bool vi[N][N] = { false, };
+
 int main(){
 	
 	int w, h;
@@ -44,12 +45,13 @@ int main(){
 	}
 	
 	for(int y = 0; y < h; y ++){
-		for(int x = 0; x < h; x ++){
-			if((x != sx && y != sy) && (r[y][x] == 0 && m[y][x] == 1)){
+		for(int x = 0; x < w; x ++){
+			if(!(x == sx && y == sy) && (r[y][x] == 0 && m[y][x] == 1)){
 				printf("-1 ");
-				continue;
 			}
-			printf("%d ", r[y][x]);
+			else{
+				printf("%d ", r[y][x]);
+			}
 		}
 		printf("\n");
 	}

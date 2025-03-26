@@ -5,20 +5,16 @@
 using std::unordered_map;
 using std::vector;
 
-constexpr int N = 2001;
+constexpr int N = 1001;
+unordered_map<int, vector<int>> graph{};
+unordered_map<int, int> p{}, q{};
+bool visited[N] = { false, };
 
-template<typename G, typename T, typename U>
-bool match(
-	G& graph, 
-	T& p,
-	T& q,
-	int u, 
-	U& visited
-){
+bool match(int u){
 	visited[u] = true;
 	for(auto& v: graph[u]){
 		//not matched or match if other point move
-		if(!q[v] || !visited[q[v]] && match(graph, p, q, q[v], visited)){
+		if(!q[v] || !visited[q[v]] && match(q[v])){
 			p[u] = v;
 			q[v] = u;
 			return true;
@@ -28,25 +24,25 @@ bool match(
 }
 
 int main(){
-	unordered_map<int, vector<int>> graph{};
-	unordered_map<int, int> p{}, q{};
-	bool visited[N] = { false, };
 	int n, m;
-	scanf("%d %d", &n, &m);
-
+	n = 1000; m = 1000;
+	//scanf("%d %d", &n, &m);
 	for(int u = 1; u <= n; u ++){
 		int s, v;
-		scanf("%d", &s);
+		s = 1000;
+		//scanf("%d", &s);
 		for(int j = 0; j < s; j ++){
-			scanf("%d", &v);
+			v = j+1;
+			//scanf("%d", &v);
 			graph[u].push_back(v);
 		}
 	}
 	int result = 0;
 	for(int i = 1; i <= n; i ++){
+        if(result >= m) break;
 		if(!p[i]){
 			std::fill(visited, visited+N, false);
-			result += match(graph, p, q, i, visited);
+			if(match(i)) result++;
 		}
 	}
 	

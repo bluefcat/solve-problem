@@ -1,6 +1,6 @@
 #include <cstdio>
 
-constexpr int N = 26 * 500 + 1;
+constexpr int N = 13000000+1;
 
 constexpr int get_idx(char x){
 	return (int)(x - 'a');
@@ -11,11 +11,10 @@ struct Node{
 	Node* next[26] = { nullptr };	
 };
 
-Node nodes[N];
-int size = 0;
+Node nodes;
 
 int main(){
-	Node* root = nodes + 0;
+	Node* root = &nodes;
 
 	int n, m, result = 0;
 	scanf("%d %d", &n, &m);
@@ -30,7 +29,7 @@ int main(){
 		while(*p){
 			int idx = get_idx(*p);
 			if(cur->next[idx] == nullptr)
-				cur->next[idx] = nodes + (++size);
+				cur->next[idx] = new Node();
 			cur = cur->next[get_idx(*p)];
 			p ++;
 		}
@@ -43,7 +42,7 @@ int main(){
 
 		Node* cur = root;
 		char* p = tmp;
-		while(*p && cur){
+		while(cur && *p){
 			cur = cur->next[get_idx(*p)];	
 			p ++;
 		}

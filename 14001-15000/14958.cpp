@@ -100,7 +100,7 @@ int main(){
 	fft(us, true);
 	
 	long long result = 0;
-	for(int i = m-1; i < n; i ++){
+	for(int i = m-1; i < n+m-1; i ++){
 		ur[i] /= complex(size, 0);
 		up[i] /= complex(size, 0);
 		us[i] /= complex(size, 0);
@@ -109,6 +109,7 @@ int main(){
 		us[i] = complex(round(us[i].real()), round(us[i].imag()));
 
 		long long x = (int)ur[i].real() + (int)up[i].real() + (int)us[i].real();
+		printf("%lld ", x);
 		result = std::max(result, x);
 	}
 	

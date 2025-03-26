@@ -42,7 +42,7 @@ int main(){
 	
 	long double result = bisection(a, b, c, function, 1e-20);
 	
-	result = round(result * 1000000) / 1000000;
+	result = round(result * 10e20) / 10e20;
 
 	printf("%.6Lf\n", result);
 

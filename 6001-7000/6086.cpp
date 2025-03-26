@@ -53,7 +53,7 @@ int main(){
 		
 		for(int i = e; i != s; i = table[i]){
 			flow[table[i]][i] += f;
-			flow[i][table[i]] += f;
+			flow[i][table[i]] -= f;
 		}	
 		result += f;
 	}

@@ -31,7 +31,8 @@ void fft(vector<complex>& f, complex w){
 
 int main(){
 	int n, d, result = 0, size = 1;
-	scanf("%d", &n);
+	n = N;
+	//scanf("%d", &n);
 	
 	while(N+2 > size) size <<= 1;
 	size <<= 1;
@@ -41,15 +42,15 @@ int main(){
 	complex w(std::cos(2*pi/size), std::sin(2*pi/size));
 	f[0] = 1;
 	for(int i = 0; i < n; i ++){
-		int x;
-		scanf("%d", &x);
+		int x = i;
+		//scanf("%d", &x);
 		f[x] = {1, 0};
 	}
 
 	fft(f, w);
 	for(int i = 0; i < size; i ++) g[i] = f[i]*f[i];
 	fft(g, complex(1, 0)/w);
-	
+	return 0;
 	for(int i = 0; i < size; i ++){
 		g[i] /= complex(size, 0);
 		g[i] = complex(round(g[i].real()), round(g[i].imag()));

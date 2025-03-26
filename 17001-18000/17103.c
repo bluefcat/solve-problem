@@ -14,12 +14,13 @@ int main(){
 			prime[i*j] = 0;		
 	}
 	
-	int t;
-	scanf("%d", &t);
+	int t = 100000;
+	//scanf("%d", &t);
 
 	while(t--){
 		int n;
-		scanf("%d", &n);
+		n = t;
+		//scanf("%d", &n);
 
 		int answer = 0;
 		for(int i = 2; i < n/2+1; i ++){

@@ -1,8 +1,8 @@
 #include <cstdio>
 #include <algorithm>
 
-constexpr int N = 100001;
-constexpr int LN = 17;
+constexpr int N = 100008;
+constexpr int LN = 18;
 
 int arr[N] = { 0, };
 int sorted[N] = { 0, };

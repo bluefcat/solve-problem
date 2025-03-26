@@ -36,7 +36,7 @@ int build(
 			result = std::min(result, parent[next]);
 		}
 	}
-
+	printf("%d %d %d\n", cur, parent[cur], result);
 	if(parent[cur] != result) 
 		return result;
 	
@@ -72,8 +72,11 @@ int main(){
 		scanf("%d %d", &u, &v);
 		graph[u].push_back(v);
 	}
-
-	build(count, result, id, graph, 1, parent, finished, cand);
+	
+	for(int i = 1; i <= n; i ++){
+		if(finished[i]) continue;
+		build(count, result, id, graph, i, parent, finished, cand);
+	}
 	std::sort(
 		result.begin(), 
 		result.end(), 

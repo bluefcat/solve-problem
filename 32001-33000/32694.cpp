@@ -35,7 +35,8 @@ int main(){
 		
 		lint n = w+b-1, m = b;
 		while(n > 0 && m > 0){
-			if((m % MOD) > (n % MOD) || 0 == (m % MOD)){
+			lint nm = n % MOD, mm = m % MOD;
+			if(mm < 0){
 				result = 0;
 				break;
 			}

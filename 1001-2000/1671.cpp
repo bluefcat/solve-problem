@@ -6,6 +6,7 @@ using std::unordered_map;
 using std::unordered_set;
 
 constexpr int N = (50<<1) + 1;
+int p[N] = { 0, };
 
 bool is_strong(int x[3], int y[3]){
 	bool result = true;
@@ -14,13 +15,20 @@ bool is_strong(int x[3], int y[3]){
 	return result;
 }
 
-template<typename U>
-bool find(U& b, int cur, int target){
-	while(cur != -1){
-		cur = b[cur] - (b[cur]%2==0);
-		if(target == cur || target+1 == cur) return true;
+int find(int x){
+	if(p[x] == x) return x;
+	return p[x] = find(p[x]);
+}
+
+void combine(int x, int y){
+	int px = find(x);
+	int py = find(y);
+	
+	if(px < py){
+		p[py] = px;
+		return;
 	}
-	return false;
+	p[px] = py;
 }
 
 template<typename T, typename U, typename V>
@@ -29,11 +37,12 @@ bool predict(T& graph, U& a, U& b, int cur, V& check){
 	check[cur] = true;
 
 	for(int next: graph[idx]){
-		if(find(b, idx, next)) continue;
+		if(find(idx) == next) continue;
 		if(
 			!b[next] || 
 			!check[b[next]] && predict(graph, a, b, b[next], check)
 		){
+			combine(idx, next);
 			a[cur] = next;
 			b[next] = cur;
 			return true;
@@ -52,8 +61,10 @@ int main(){
 
 	int n;
 	scanf("%d", &n);
-	for(int i = 1; i < 2*n+1; i +=2)
+	for(int i = 1; i < 2*n+1; i +=2){
+		p[i] = i;
 		scanf("%d %d %d", shark[i]+0, shark[i]+1, shark[i]+2);
+	}
 	
 	
 	for(int i = 1; i < 2*n+1; i += 2){
@@ -76,6 +87,10 @@ int main(){
 		int check[N] = { false, };
 		eat += predict(graph, a, b, i, check);
 	}
+
+	//for(int i = 1; i < 2*n+1; i ++){
+	//	printf("%d(%d) -> %d\n", i-(i%2==0), 1+(i%2==0), a[i]);
+	//}
 
 	printf("%d\n", n-eat);
 

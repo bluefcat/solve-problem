@@ -9,13 +9,14 @@ constexpr int N = 1000001;
 constexpr int Q = 200001;
 
 void set_prime(vector<complex>& f){
-	for(int i = 2; i < N; i ++)
-		f[i] = { 1, 0 };
-	
 	for(int i = 2; i < N; i ++){
+		if(i == 2 || i & 1) f[i] = { 1, 0 };
+	}
+	
+	for(int i = 3; i*i <= N; i +=2){
 		if((int)f[i].real() == 0) continue; 
-		for(int j = 2; i*j < N; j ++){
-			f[i*j] = { 0, 0 };
+		for(int j = i*i; j < N; j+=i){
+			f[j] = { 0, 0 };
 		}
 	}
 }
@@ -46,10 +47,9 @@ int main(){
 	int n, size = 1;
 	while(N > size) size <<= 1;
 	size <<= 1;
+	printf("%d\n", size);
 	vector<complex> f(size, 0);
 	set_prime(f);
-
-	printf("%lf\n", f[59].real());
 
 	complex w(std::cos(2*pi/size), std::sin(2*pi/size));
 	fft(f, w);
@@ -61,14 +61,15 @@ int main(){
 		f[i] = complex(round(f[i].real()), round(f[i].imag()));
 	}
 
-	int t;
-	scanf("%d", &t);
+	int t = 100000;
+	//scanf("%d", &t);
 	while(t--){
 		int x;
-		scanf("%d", &x);
-		long long result = (long long)(f[x].real());
+		x = t;
+		//scanf("%d", &x);
+		int result = (int)(f[x].real());
 		result = (result / 2) + (result & 1);
-		printf("%lld\n", result);
+		printf("%d\n", result);
 	}
 
 	return 0;

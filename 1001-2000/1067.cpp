@@ -6,7 +6,7 @@
 using complexd = std::complex<double>;
 using std::vector;
 
-constexpr double pi = 3.14159265;
+constexpr double pi = 3.14159265358979;
 
 void fft(vector<complexd>& f, complexd w){
 	int n = f.size();

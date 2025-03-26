@@ -1,3 +1,4 @@
+#include <ctime>
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
@@ -78,14 +79,16 @@ ull pollard_rho(ll n){
 }
 
 int main(){
+	srand(time(0));
 	unordered_map<ull, ull> cand{};
-	int n;
-	scanf("%d", &n);
+	int n = 1000;
+	//scanf("%d", &n);
 	
 	for(int i = 0; i < n ; i ++){
 		unordered_map<ull, bool> check{};
 		ull x;
-		scanf("%lld", &x);
+		x = rand();
+		//scanf("%lld", &x);
 		while(x > 1){
 			ull p = pollard_rho(x);
 			if(check[p] == false){

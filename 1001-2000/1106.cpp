@@ -32,7 +32,7 @@ int main(){
 		auto& [cost, w] = field[i-1];
 		for(int ci = 1; ci <= c; ci ++){
 			if(ci - w <= 0)
-				cache[i][ci] = (ci/w +(ci%w != 0)) * cost;
+				cache[i][ci] = std::min(cache[i-1][ci], (ci/w +(ci%w != 0)) * cost);
 			else
 				cache[i][ci] = std::min(
 					cache[i][ci-w] + cost,
@@ -44,9 +44,9 @@ int main(){
 
 	for(int i = 0; i <= n; i ++){
 		for(int j = 0; j <= c; j ++){
-			//printf("%3d ", cache[i][j]);
+			printf("%3d ", cache[i][j]);
 		}
-		//printf("\n");
+		printf("\n");
 	}
 
 	printf("%d\n", cache[n][c]);

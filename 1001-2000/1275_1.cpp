@@ -45,8 +45,7 @@ int main(){
 	scanf("%d %d", &n, &q);
 	for(int i = 0; i < n; i ++)
 		scanf("%lld", arr+i);
-	int size = 1;
-	while(size < (n<<1)) size <<= 1;
+	int size = 1 << LN;
 	init(n, size);
 
 	for(int i = 0 ; i < q; i ++){

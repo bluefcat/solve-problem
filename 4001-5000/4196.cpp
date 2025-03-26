@@ -66,7 +66,7 @@ int main(){
 			bool finished[N] = { false, };
 			for(int i = 1; i <= n; i ++){
 				if(finished[i]) continue;
-				build(id, scc, graph, s, 1, ids, finished);
+				build(id, scc, graph, s, i, ids, finished);
 			}
 		}
 		
@@ -94,9 +94,11 @@ int main(){
 		
 		bool scc_check[N] = { false, };
 		int result = 0;
+		for(int i = 1; i <= n; i ++) printf("(%d %d), ", i, scc[i]); printf("\n");
 		for(int i = 1; i <= n; i ++){
 			if(scc_check[scc[i]]) continue;
 			scc_check[scc[i]] = true;
+			printf("%d(%d), ", scc[i], order[scc[i]]);
 			if(order[scc[i]] == 0) result ++;
 		}
 		printf("%d\n", result);

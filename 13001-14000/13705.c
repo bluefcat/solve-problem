@@ -1,18 +1,19 @@
 #include <stdio.h>
 #include <math.h>
 
-#define N 100
+#define N 1000
 
 _Float128 pi; 
 
 _Float128 sint(_Float128 x){
-	return (_Float128)sinl((long double)x);
+	_Float128 q = (_Float128)(long long)(x / (2*pi));
+	x -= q * 2 * pi;
 	_Float128 result = 0;
 	_Float128 e = x;	
 	_Float128 b = 1;
 	for(_Float128 i = 1; i < N; i ++){
 		result += b*e;
-		e *= (x*x)/(2*i * (2*i+1));
+		e *= (x/(2*i))*(x/(2*i+1));
 		b *= -1;
 	}
 	return result;

@@ -1,25 +1,40 @@
 #include <stdio.h>
 #include <math.h>
 
-long double function(long double a, long double b, long double c, long double x){
-	return a * x + b * sinl(x) - c;
+#define N 100
+
+_Float128 pi; 
+
+_Float128 sint(_Float128 x){
+	return (_Float128)sinl((long double)x);
+	_Float128 result = 0;
+	_Float128 e = x;	
+	_Float128 b = 1;
+	for(_Float128 i = 1; i < N; i ++){
+		result += b*e;
+		e *= (x*x)/(2*i * (2*i+1));
+		b *= -1;
+	}
+	return result;
 }
 
-long double bisection(
-	long double a, long double b, long double c,
-	long double(*f)(long double, long double, long double, long double),
-	long double allowrance){
+
+_Float128 function(_Float128 a, _Float128 b, _Float128 c, _Float128 x){
+	return a * x + b * sint(x) - c;
+}
+
+_Float128 bisection(
+	_Float128 a, _Float128 b, _Float128 c,
+	_Float128(*f)(_Float128, _Float128, _Float128, _Float128)
+	){
 	
-	long double left = c / a - 1.f;
-	long double right = c / a + 1.f;
-	long double mid = (left + right) / 2.f;	
+	_Float128 left = (c / a) - (_Float128)(1);
+	_Float128 right = (c / a) + (_Float128)(1);
+	_Float128 mid = (left + right) / (_Float128)2;	
 
-	while(right - left > allowrance){
-		mid = (left + right) / 2.f;
-		long double t = f(a, b, c, mid);
-		if(mid-allowrance <= left && left <= mid+allowrance) return left;
-		if(mid-allowrance <= right && right <= mid+allowrance) return mid;
-
+	for(int i = 0; i < 1000; i ++){
+		mid = (left + right) / (_Float128)2;
+		_Float128 t = f(a, b, c, mid);
 		if(t > 0){
 			right = mid;
 		}
@@ -36,15 +51,24 @@ long double bisection(
 }
 
 int main(){
+	pi = (_Float128)acosl(-1);
 	long double a, b, c;
 	
 	scanf("%Lf %Lf %Lf", &a, &b, &c);
 	
-	long double result = bisection(a, b, c, function, 1e-20);
-	
-	result = round(result * 10e20) / 10e20;
+	_Float128 result = bisection(
+		(_Float128)a, 
+		(_Float128)b, 
+		(_Float128)c, 
+		function
+	);
 
-	printf("%.6Lf\n", result);
+	long long x = (long long)(result *10e6);
+	long double y = 0;
+	if(x % 10 >= 5) y = (long double)(x/10) + 1;
+	else y = (long double)(x/10);
+
+	printf("%Lf\n", y / 10e5);
 
 	return 0;
 }

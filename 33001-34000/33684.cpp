@@ -21,12 +21,12 @@ int main(){
 		if(M < arr[i]) M = arr[i];
 	}
 
-	if(m <= 0){
-		printf("-1\n");
-		return 0;
-	}
 	if(M > k){
 		printf("0\n");
+		return 0;
+	}
+	if(m <= 0){
+		printf("-1\n");
 		return 0;
 	}
 	

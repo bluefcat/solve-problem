@@ -1,0 +1,16 @@
+1
+9 5
+In this article, we will compare a number of different health
+insurance options. We will look at 3 different plans.
+Plan UnNeeded is intended for healthy individuals; it has a low
+premium of 500 dollars.
+Plan MiddleOfTheRoad offers a balanced option. Its premium is $2000.
+The copayment per visit is 10% or 200$, whichever is lower.
+Plan Sicko is intended for heavy usage. Its premium is $3000. The
+copayment is at most 10$ PER VISIT or 3 percent.
+Oh, we also forgot to mention; Plan unneeded has a total copay of 10%.
+500
+110
+1750
+2000
+12000

@@ -5,14 +5,14 @@ from collections import OrderedDict
 from typing import Any
 
 input = sys.stdin.readline
-k = int(input())
+T = int(input())
 pattern: dict[str, Any] = {
     "plan": re.compile(r"(Plan|plan) ([A-z|a-z]*)"),
     "premium": re.compile(r"(Premium|premium)[ |A-Z|a-z]*\$?([0-9]*)"),
     "copay": re.compile(r"(copayment|Copayment|copay|Copay)(.*)"),
 }
 
-for l in range(k):
+for l in range(T):
     m, n = map(int, input().split())
     content = " ".join([input().strip() for _ in range(m)])
     payment = [int(input()) for _ in range(n)]
@@ -118,4 +118,6 @@ for l in range(k):
         pp = round(pp, 2)
         print(f"{pp:.2f}")
     
+    if l != T-1:
+        print()
 

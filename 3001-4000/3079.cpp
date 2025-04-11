@@ -1,5 +1,5 @@
 #include <cstdio>
-using lint = long long;
+using lint = unsigned long long;
 constexpr int N = 100'001;
 lint arr[N] = { 0, };
 
@@ -15,6 +15,7 @@ bool check(lint n, lint m, lint t){
 
 int main(){
 	lint n, m;
+	n = 1e5; m = 1e9;
 	scanf("%lld %lld", &n, &m);
 	lint k = 0;
 	for(int i = 0; i < n; i ++){

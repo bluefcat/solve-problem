@@ -5,9 +5,13 @@ y = ''
 kidx = len(kb)-1
 for i in xb[::-1]:
     if i == '0':
-        y = kb[kidx] + y
-        kidx -= 1
+        if kidx >= 0:
+            y = kb[kidx] + y
+            kidx -= 1
+        else:
+            y = '0' + y
     else:
         y = '0' + y
 y = kb[:kidx+1] + y
-print(int(y, 2))
+y = int(y, 2)
+print(y)

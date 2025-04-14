@@ -27,7 +27,7 @@ int main(){
 	
 	std::sort(arr, arr+n+1, [](lint x, lint y){ return x > y; });
 
-	lint no = 1, yes = l;
+	lint no = 0, yes = l;
 	
 	while(no + 1 < yes){
 		lint mid = (yes + no) >> 1;

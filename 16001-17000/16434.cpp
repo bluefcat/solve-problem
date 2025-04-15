@@ -18,7 +18,7 @@ bool check(lint n, lint mhp, lint atk){
 				lint et = (chp / arr[i][1]) + (chp % arr[i][1] != 0);
 				lint pt = (arr[i][2] / atk) + (arr[i][2] % atk != 0);
 				if(pt <= et){
-					lint dmg = arr[i][1] * (pt - (pt == et));
+					lint dmg = arr[i][1] * (pt - 1);
 					if(dmg >= chp) chp = 0;
 					else chp -= dmg;
 				}

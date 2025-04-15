@@ -11,6 +11,7 @@ bool check(lint n, lint m, lint k){
 	for(int i = 0; i < n; i ++){
 		if(tmp < arr[i]){
 			lint q = arr[i]/k + (arr[i] % k != 0);
+			if(q > 1) return false;
 			tmp = k*q;
 			count += q;
 		}
@@ -26,7 +27,6 @@ int main(){
 		scanf("%lld", arr+i);
 
 	lint no = 0, yes = 100'000 * 10'000 + 1;
-	yes = 501;
 	while(no + 1 < yes){
 		lint mid = (yes + no) >> 1;
 		if(check(n, m, mid)) yes = mid;

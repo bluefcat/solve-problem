@@ -4,13 +4,12 @@
 using lint = long long;
 constexpr lint N = 1'000'001;
 lint arr[N];
+lint h = 0;
 
 bool check(lint c, lint n, lint s){
 	lint idx = 1, used = 0;
+	if(h > s) return false;
 	while(idx <= c){
-		for(lint i = idx; i < idx+s; i ++){
-			if(arr[i] > s) return false;
-		}
 
 
 		if(arr[idx] != 0){
@@ -32,6 +31,7 @@ int main(){
 		lint r1, c1;
 		scanf("%lld %lld", &r1, &c1);
 		arr[c1] = std::max(arr[c1], r1);
+		h = std::max(h, r1);
 	}
 
 	lint no = 0, yes = c;

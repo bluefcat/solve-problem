@@ -8,6 +8,11 @@ lint arr[N];
 bool check(lint c, lint n, lint s){
 	lint idx = 1, used = 0;
 	while(idx <= c){
+		for(lint i = idx; i < idx+s; i ++){
+			if(arr[i] > s) return false;
+		}
+
+
 		if(arr[idx] != 0){
 			used ++;
 			idx += s;

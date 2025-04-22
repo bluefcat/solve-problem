@@ -4,16 +4,15 @@
 #include <tuple>
 #include <cassert>
 
-struct node{
+struct Node{
 	int row;
 	int size;
-	node* col;
-
-	node *up, *down, *left, *right;
+	Node* col{nullptr};
+	Node *up{this}, *down{this}, *left{this}, *right{this};	
 };
 
-void dlx_cover(node* head){
-	//delete head node
+void dlx_cover(Node* head){
+	//delete head Node
 	/*
 	 * [l | A | r] <-> [l | head | r] <-> [l | B | r]
 	 * [l | A | r] <--------------------> [l | B | r]
@@ -22,8 +21,8 @@ void dlx_cover(node* head){
 	head->left->right = head->right;
 	
 	//circular linked list
-	for(node* it = head->down; it != head; it = it->down){
-		for(node* jt = it->right; jt != it; jt = jt->right){
+	for(Node* it = head->down; it != head; it = it->down){
+		for(Node* jt = it->right; jt != it; jt = jt->right){
 			jt->down->up = jt->up;
 			jt->up->down = jt->down;
 			jt->col->size --;
@@ -31,9 +30,9 @@ void dlx_cover(node* head){
 	}
 }
 
-void dlx_uncover(node* head){
-	for(node* it = head->up; it != head; it = it->up){
-		for(node* jt = it->left; jt != it; jt = jt->left){
+void dlx_uncover(Node* head){
+	for(Node* it = head->up; it != head; it = it->up){
+		for(Node* jt = it->left; jt != it; jt = jt->left){
 			jt->down->up = jt;
 			jt->up->down = jt;
 			jt->col->size ++;
@@ -44,13 +43,13 @@ void dlx_uncover(node* head){
 	head->right->left = head;
 }
 
-bool dlx_search(node* head, int k, std::vector<int>& solution){
+bool dlx_search(Node* head, int k, std::vector<int>& solution){
 	if(head->right == head) return true;
 
-	node* ptr = nullptr;
+	Node* ptr = nullptr;
 	int low = INT_MAX;
 	
-	for(node* it = head->right; it != head; it = it->right){
+	for(Node* it = head->right; it != head; it = it->right){
 		if(it->size < low){
 			if(it->size == 0) return false;
 			low = it->size;
@@ -60,22 +59,25 @@ bool dlx_search(node* head, int k, std::vector<int>& solution){
 
 	dlx_cover(ptr);
 	
-	for(node* it = ptr->down; it != ptr; it = it->down){
+	for(Node* it = ptr->down; it != ptr; it = it->down){
 		solution.push_back(it->row);
-		for(node* jt = it->right; jt != it; jt = jt->right){
+		for(Node* jt = it->right; jt != it; jt = jt->right){
 			dlx_cover(jt->col);
 		}
 
 		if(dlx_search(head, k+1, solution)) return true;
 
 		solution.pop_back();
-		for(node* jt = it->left; jt != it; jt = jt->left){
+		for(Node* jt = it->left; jt != it; jt = jt->left){
 			dlx_uncover(jt->col);
 		}
 	}
 	dlx_uncover(ptr);
 	return false;
 }
+
+
+Node* board_[500+1];
 
 constexpr int get_idx(int x, int r, int c){
 	return (x*10*10)+(r*10)+c;
@@ -88,17 +90,29 @@ constexpr std::tuple<int, int, int> get_value(int idx){
 	return {(idx / 100) % 10, (idx / 10) % 10, idx % 10};
 }
 
-node* board_[1000+1];
+void init(Node* head){
+	Node* cur = head;
+	for(int t = 0; t < 4; t ++){
+		for(int i = 1; i <= 9; i ++){
+			for(int j = 1; j <= 9; j ++){
+				Node* h = new Node{0, 0};
+				h->up = h; h->down = h;
+				h->left = cur; h->right = cur->right;
+				cur->right = h;
+				board_[get_idx(t, i, j)] = h;
+				cur = h;
+			}
+		}
+	}
+}
 
 template<typename T>
-node* append(T row, T head){
-	node* result = new node{row};
-	result->left = result;
-	result->right = result;
+Node* append(T row, T head){
+	Node* result = new Node{row};
+	Node* h = board_[head];
 
-	node* h = board_[head];
 	h->size ++;
-	node* it = h;
+	Node* it = h;
 	for(;it->down != h; it = it->down);
 	
 	result->up = it; 
@@ -111,15 +125,15 @@ node* append(T row, T head){
 }
 
 template<typename T, typename... Args>
-node* append(T row, T head, Args... args){
-	node* result = append(row, head);
-	node* next = append(args...);
+Node* append(T row, T head, Args... args){
+	Node* result = append(row, head);
+	Node* next = append(args...);
 	
 	result->right = next; 
 	result->left = next->left;
+
+	next->left->right = result;
 	next->left = result;
-	result->left->right = result;
-	//next->right = result;
 	return result;
 }
 
@@ -127,23 +141,9 @@ node* append(T row, T head, Args... args){
 
 int main(){
 	std::vector<int> solution{};
-	node* head = new node{0, 0};
-	head->up = head; head->down = head; head->left = head; head->right = head;
+	Node* head = new Node{0, 0};
 	
-	node* cur = head;
-
-	for(int t = 0; t < 4; t ++){
-		for(int i = 1; i <= 9; i ++){
-			for(int j = 1; j <= 9; j ++){
-				node* h = new node{0, 0};
-				h->up = h; h->down = h;
-				h->left = cur; h->right = cur->right;
-				cur->right = h;
-				board_[get_idx(t, i, j)] = h;
-				cur = h;
-			}
-		}
-	}
+	init(head);
 
 	int board[9][9] = { 0, };
 	for(int i = 1; i <= 9; i ++){
@@ -170,8 +170,6 @@ int main(){
 		}
 	}
 		
-
-	//
 	bool result = dlx_search(head, 0, solution);
 
 	for(auto& x: solution){

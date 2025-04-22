@@ -145,6 +145,9 @@ int main(){
 	for(int t = 0; t < 81; t ++){
 		int s, u, v;
 		scanf("%d %d %d", &s, &u, &v);
+		if(board[s-1][u-1] != 0 && answer == -1){
+			answer = t+1;
+		}
 		board[s-1][u-1] = v;
 
 		std::vector<int> solution{};

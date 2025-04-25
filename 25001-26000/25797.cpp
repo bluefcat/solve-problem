@@ -82,6 +82,38 @@ int main(){
 			}
 		}
 	}
+	
+	char pattern[4][3][4] = {
+		{".|.", ".+.", "..."},
+		{"...", ".+.", ".|."},
+		{"...", ".+-", "..."},
+		{"...", "-+.", "..."},
+	};
+	
+	bool has_pattern = false;
+	for(int i = 0; i < 2*n+1-3; i ++){
+		for(int j = 0; j < 2*n+1-3; j ++){
+			for(int p = 0; p < 4; p ++){
+				for(int h = 0; h < 3; h ++){
+					for(int w = 0; w < 3; w ++){
+						if(board[i+h][j+w] != pattern[p][h][w]){
+							goto NEXT;
+						}
+					}
+				}
+				has_pattern = true;
+				NEXT:
+				continue;
+			}
+
+		}
+	}
+
+	if(has_pattern){
+		printf("0\n");
+		return 0;
+	}
+
 
 	bool visited[N][N] = { 0, };
 	bool flag = true;	
@@ -128,9 +160,11 @@ int main(){
 			}
 			if(w != b){
 				flag &= false;
+				break;
 			}
 			if(n != -1 && (w != n || b != n)){
 				flag &= false;
+				break;
 			}
 			
 			int mx = 99, my = 99;
@@ -180,6 +214,7 @@ int main(){
 			}
 			if(!same_shape){
 				flag &= false;
+				break;
 			}
 			
 			bool shape_visited[2][N][N] = {false};
@@ -215,7 +250,13 @@ int main(){
 					q.push(n);
 				}
 			}
-			if(bsc != b || wsc != w) flag &= false;
+			if(bsc != b || wsc != w){ 
+				flag &= false;
+				break;
+			}
+
+			
+
 		}
 	}
 	printf("%d\n", flag);

@@ -194,7 +194,7 @@ int main(){
 					for(int i = 0; i < b; i ++){
 						bool tmp = false;
 						for(int j = 0; j < w; j ++){
-							if(sb[i].first == sw[j].first && sb[i].second == sw[i].second){
+							if(sb[i].first == sw[j].first && sb[i].second == sw[j].second){
 								tmp = true;
 							}	
 						}

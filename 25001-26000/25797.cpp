@@ -14,6 +14,7 @@ enum Direction{
 struct Vertex{
 	int px = 0, py = 0;
 	int color = 0;
+	int area = 0;
 	int x = -1;
 	Vertex* next[4];
 };
@@ -83,48 +84,21 @@ int main(){
 		}
 	}
 	
-	char pattern[4][3][4] = {
-		{".|.", ".+.", "..."},
-		{"...", ".+.", ".|."},
-		{"...", ".+-", "..."},
-		{"...", "-+.", "..."},
-	};
-	
-	bool has_pattern = false;
-	for(int i = 0; i < 2*n+1-3; i ++){
-		for(int j = 0; j < 2*n+1-3; j ++){
-			for(int p = 0; p < 4; p ++){
-				for(int h = 0; h < 3; h ++){
-					for(int w = 0; w < 3; w ++){
-						if(board[i+h][j+w] != pattern[p][h][w]){
-							goto NEXT;
-						}
-					}
-				}
-				has_pattern = true;
-				NEXT:
-				continue;
-			}
-
-		}
-	}
-
-	if(has_pattern){
-		printf("0\n");
-		return 0;
-	}
 
 
 	bool visited[N][N] = { 0, };
 	bool flag = true;	
+	int cnt = -1;
 	for(int i = 0; i < n; i ++){
 		for(int j = 0; j < n; j ++){
 			if(visited[i][j]) continue;
 
 			std::queue<Vertex*> q({field[i][j]});
+			cnt ++;
+			field[i][j]->area = cnt;
 			visited[i][j] = true;
 
-			int w = 0, b = 0, n = -1;
+			int w = 0, b = 0, p = -1;
 			Vertex* start_w = nullptr;
 			Vertex* start_b = nullptr;
 
@@ -144,25 +118,28 @@ int main(){
 					sw[w] = {cur->py, cur->px};
 					w ++;
 				}
-				if(n == -1){
-					n = cur->x;
+				if(p == -1){
+					p = cur->x;
 				}
-				else if(n != -1 && cur->x != -1){
+				else if(p != -1 && cur->x != -1){
 					flag &= false;	
 				}	
 				for(auto& [dir, dx, dy]: mov){
-					Vertex* n = cur->next[dir];
-					if(n == nullptr) continue;	
-					if(visited[n->py][n->px]) continue;
-					visited[n->py][n->px] = true;
-					q.push(n);
+					Vertex* nx = cur->next[dir];
+					if(nx == nullptr) continue;	
+					if(visited[nx->py][nx->px]) continue;
+					visited[nx->py][nx->px] = true;
+					nx->area=cnt;
+					q.push(nx);
 				}
 			}
+
+
 			if(w != b){
 				flag &= false;
 				break;
 			}
-			if(n != -1 && (w != n || b != n)){
+			if(p != -1 && (w != p || b != p)){
 				flag &= false;
 				break;
 			}
@@ -180,7 +157,7 @@ int main(){
 			bool same_shape = false;
 			//check shape
 			for(int f = 0; f < 2; f++){
-				for(int r = 0; r < 4; r ++){
+				for(int r = 0; r < 5; r ++){
 					int bp[N] = { 0, };	
 					int mbx = 99, mby = 99;
 					for(int i = 0; i < b; i ++){
@@ -226,13 +203,13 @@ int main(){
 			while(!q.empty()){
 				Vertex* cur = q.front(); q.pop();
 				for(auto& [dir, dx, dy]: mov){
-					Vertex* n = cur->next[dir];
-					if(n == nullptr) continue;	
-					if(shape_visited[0][n->py][n->px]) continue;
-					if(n->color != 0) continue;
-					shape_visited[0][n->py][n->px] = true;
+					Vertex* nx = cur->next[dir];
+					if(nx == nullptr) continue;	
+					if(shape_visited[0][nx->py][nx->px]) continue;
+					if(nx->color != 0) continue;
+					shape_visited[0][nx->py][nx->px] = true;
 					wsc ++;
-					q.push(n);
+					q.push(nx);
 				}
 			}
 			while(!q.empty()) q.pop();
@@ -241,13 +218,13 @@ int main(){
 			while(!q.empty()){
 				Vertex* cur = q.front(); q.pop();
 				for(auto& [dir, dx, dy]: mov){
-					Vertex* n = cur->next[dir];
-					if(n == nullptr) continue;	
-					if(shape_visited[1][n->py][n->px]) continue;
-					if(n->color != 1) continue;
-					shape_visited[1][n->py][n->px] = true;
+					Vertex* nx = cur->next[dir];
+					if(nx == nullptr) continue;	
+					if(shape_visited[1][nx->py][nx->px]) continue;
+					if(nx->color != 1) continue;
+					shape_visited[1][nx->py][nx->px] = true;
 					bsc ++;
-					q.push(n);
+					q.push(nx);
 				}
 			}
 			if(bsc != b || wsc != w){ 
@@ -255,8 +232,21 @@ int main(){
 				break;
 			}
 
-			
-
+		}
+	}
+	for(int y = 0; y < n; y ++){
+		for(int x = 0; x < n; x ++){
+			Vertex* cur = field[y][x];
+			for(auto& [dir, dy, dx]: mov){
+				if(!(0 <= x+dx && x+dx < n) || !(0 <= y+dy && y+dy <n)) continue;
+				if(
+					(cur->area == field[y+dy][x+dx]->area) &&
+					(cur->next[dir] == nullptr)
+				){
+					flag &= false;
+					break;
+				}
+			}
 		}
 	}
 	printf("%d\n", flag);

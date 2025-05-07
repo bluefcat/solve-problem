@@ -4,12 +4,11 @@
 using lint = long long;
 constexpr int N = 1'000'001;
 
-lint arr[N] = { 0, };
-
 int main(){
 	int t;
 	scanf("%d", &t);
 	while(t--){
+		lint arr[N] = { 0, };
 		std::vector<int> sell{};
 		int n;
 		scanf("%d", &n);
@@ -21,7 +20,7 @@ int main(){
 		}
 		sell.push_back(-1);
 		sell.push_back(left);
-		while(left != n-1){
+		while(left < n-1){
 			lint tmp = left+1;
 			max = arr[left+1];
 			for(int i = left+1; i < n; i ++){

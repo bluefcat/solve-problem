@@ -1,8 +1,10 @@
 #include <cstdio>
+#include <vector>
 
 constexpr int N = 500'001;
 constexpr int M = 11;
 bool prime[N];
+std::vector<int> p{};
 bool used[2*N+3];
 
 int board[M*M][M*M];
@@ -26,6 +28,9 @@ void build_sieve(){
 
 int main(){
 	build_sieve();
+	p.emplace_back(2);
+	for(int pi = 0; pi < N; pi ++)
+		if(prime[pi]) p.emplace_back(2*pi+3);
 
 	int n;
 	scanf("%d", &n);
@@ -36,35 +41,22 @@ int main(){
 			scanf("%d", &tmp);
 			board[i][j] = tmp;
 			if(tmp == 0) continue;
-			for(int pi = -1; pi < N; pi ++){
-				if(pi == -1){
-					if(tmp & 1) continue;
-					used[2] = true;
-				}
-				else if(prime[pi] && tmp % (2*pi+3) == 0)
-					used[2*pi+3] = true;
-			}
-			
+			for(auto pi: p) if(tmp % pi == 0) used[pi] = true; 
 		}
 	}
 	
 	int last = 0;
-	for(; last < N; last ++){
-		if(prime[last] && !used[2*last+3]) break;
+	for(; last < p.size(); last ++){
+		if(!used[p[last]]) break;
 	}
 
 	for(int i = 0; i < n*n; i ++){
 		for(int j = 0; j < n*n; j ++){
 			if(board[i][j] != 0 ) continue;
-			if(!used[2]){
-				board[i][j] = 2;
-				used[2] = true;
-				continue;
-			}
-			board[i][j] = 2*last+3;
-			used[2*last+3] = true;
-			for(; last < N; last ++){
-				if(prime[last] && !used[2*last+3]) break;
+			board[i][j] = p[last];
+			used[p[last]] = true;
+			for(; last < p.size(); last ++){
+				if(!used[p[last]]) break;
 			}
 			
 		}

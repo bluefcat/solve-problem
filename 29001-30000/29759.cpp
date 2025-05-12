@@ -10,14 +10,13 @@ bool used[2*N+3];
 int board[M*M][M*M];
 
 void build_sieve(){
-	for(int i = 0; i < N; i ++) prime[i] = -1;
 	int idx = 3;
 	int k = 3;
 	for(int i = 0; idx < N; i ++){
-		if(prime[i] == -1){ //2*i+3
-			prime[idx] = i;
+		if(prime[i] == 0){ //2*i+3
+			prime[idx] = 2*i+3;
 			for(int j = idx; N - j > k; j += k){
-				prime[j] = i;
+				prime[j] = 2*i+3;
 			}
 		}
 		idx += k;
@@ -30,7 +29,7 @@ int main(){
 	build_sieve();
 	p.emplace_back(2);
 	for(int pi = 0; pi < N; pi ++)
-		if(prime[pi] == -1) p.emplace_back(2*pi+3);
+		if(prime[pi] == 0) p.emplace_back(2*pi+3);
 
 	int n;
 	scanf("%d", &n);
@@ -42,18 +41,17 @@ int main(){
 			board[i][j] = tmp;
 			if(tmp == 0) continue;
 			while(tmp != 1){
-				if((tmp & 1) == 0){
+				while((tmp & 1) == 0){
 					tmp /= 2;
 					used[2] = true;
-					continue;
 				}
 				int pi = prime[tmp];
-				if(pi == -1){
+				if(pi == 0){
 					used[tmp] = true;
 					break;
 				}
-				used[2*pi+3] = true;
-				tmp /= (2*pi+3);
+				used[pi] = true;
+				tmp /= pi;
 			}
 		}
 	}

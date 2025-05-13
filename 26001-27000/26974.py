@@ -1,28 +1,34 @@
 import sys
 input = sys.stdin.readline 
 
+def f(r, i, j):
+    if i == j:
+        return 0
+    return max(r[i:j+1]) - min(r[i:j+1])
+
 n = int(input())
 
+field = [*map(int, input().split())]
 result = [0]
+tmp = field
+conds = [tmp]
 
-diff = [*map(int, input().split())]
-result.append(result[0] + diff[1])
-m = result[0] + diff[1]
-
-for idx in range(n-2):
-    tmp = [*map(int, input().split())]
-    tmp = tmp[1]
+for idx in range(n-1):
+    diff = tmp[1]
+    p, q = result[idx] + diff, result[idx] - diff
     
-    if diff[idx+2] >= m:
-        if (result[idx+1] + tmp) - min(result) == diff[idx+2]:
-            result.append(result[idx+1] + tmp)
-        else:
-            result.append(result[idx+1] - tmp)
-        m = diff[idx+2]
+    if all(
+        f(result+ [p], i, idx+1) == cond[idx+1]
+        for i, cond in enumerate(conds)
+    ):
+        result.append(p)
     else:
-        result.append(result[idx+1] - tmp)
+        result.append(q)
 
-_ = input()
+    tmp = [*map(int, input().split())]
+    conds.append([0] * (idx+1) + tmp)
+    
+
 
 x = min(result)
 if x < 0:

@@ -12,21 +12,12 @@ int query(int r, int c){
 int main(){
 	int r, c;
 	scanf("%d %d", &r, &c);
-	int t = r-1;
-	int sy = (t/2)*2, sx = 0;
-	int f = 0;
-	while(query(sy+1, sx+1) != 1){
-		sy ++, sx ++;
-		if(sy >= r || sx >= c){
-			t = std::max(0, t-2);
-			sy = (t/2)*2, sx = 0;
-			if(f){
-				sx += 2*f;
-			}
-			if(sy == 0) f ++;	
-		}
+	int idx = (r & 1) && (c & 1);
+	int y = idx / c, x = idx % c;
+	while(query(y+1, x+1) != 1){
+		idx += 2;
+		y = idx / c, x = idx % c;
 	}
-
 
 	return 0;
 }

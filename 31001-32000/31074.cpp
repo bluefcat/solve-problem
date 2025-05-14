@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include <vector>
@@ -10,7 +11,7 @@ int arr[N];
 
 std::vector<int> count(int l, int r){
 	printf("count %d %d\n", l, r);
-	fflush(stdout);
+	std::cout << std::flush;
 	int x, y, z, w;
 	scanf("%d %d %d %d", &x, &y, &z, &w);
 	std::vector count{x, y, z, w};
@@ -19,7 +20,8 @@ std::vector<int> count(int l, int r){
 
 int diff(int l, int r){
 	printf("diff %d %d\n", l, r);
-	fflush(stdout);
+	std::cout << std::flush;
+
 	int result = 0;
 	scanf("%d", &result);
 	return result;
@@ -36,6 +38,7 @@ int main(){
 	for(int i = 0; i < t; i ++){
 		int n;
 		scanf("%d", &n);
+		if(n == -1) return 0;
 
 		std::vector<std::pair<int, int>> p{};
 		
@@ -60,9 +63,8 @@ int main(){
 			result[idx] += r-l+1;
 			idx = (idx + 1) % 4;
 		}
-		
 		printf("! %d %d %d %d\n", result[0], result[1], result[2], result[3]);
-		fflush(stdout);
+		std::cout << std::flush;
 	}
 	return 0;
 }

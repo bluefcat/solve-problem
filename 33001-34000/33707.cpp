@@ -14,10 +14,12 @@ int main(){
 
 	for(int y = 0; y < r; y ++){
 		for(
-			int x = 1 - (y&1); x < c; x +=2
+			int x = 0; x < c; x ++
 		){
-			if(query(y+1, x+1) == 1) return 0;
+			//printf("%c", (x%2 == (y&1))?'.':'#');
+			if(x%2 != (y&1)) if(query(y+1, x+1) == 1) return 0;
 		}
+		//printf("\n");
 	}
 	return 0;
 }

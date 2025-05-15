@@ -9,7 +9,7 @@ def candidate(x, y):
     if x < 0:
         ax, dx = abs(x), dx[::-1]
     if y < 0:
-        ay, dy = abs(x), dy[::-1]
+        ay, dy = abs(y), dy[::-1]
     pos = dy[(ay + dy.index(dx[ax % 5])) % 5]
     cor = {
         0: lambda x, y: (x, y),
@@ -34,9 +34,13 @@ if x == y:
     print(0)
     exit(0)
 
-dx, dy = abs(x[0] - y[0]), abs(x[1] - y[1])
+dx, dy = abs(y[0] - x[0]), abs(y[1] - x[1])
 
-print(abs((2*dx+dy)//5) + abs((dx-2*dy)//5))
+kx, ky = 2*dx + dy, dx - 2*dy
+
+print(abs(kx//5) + abs(ky//5))
+
+
 
 
 

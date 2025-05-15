@@ -1,43 +1,36 @@
 import sys
-from collections import Counter
 input = sys.stdin.readline
 
 def get_x(m) -> int:
-    result = [0, 0]
-    t = [*zip(*m)]
+    result = [[], []]
 
     for row in m:
-        result[0] += sum(x > y for x, y in zip(row, row[1:]))
+        result[0].append(hash(tuple(sorted(row))))
 
-    for row in t:
-        result[1] += sum(x > y for x, y in zip(row, row[1:]))
-
+    for row in [*zip(*m)]:
+        result[1].append(hash(tuple(sorted(row))))
     return result
 
 t = int(input())
 
 for _ in range(t):
     r, c = map(int, input().split())
-    n = set()
     
     matrix = [[*map(int, input().split())] for _ in range(r)]
-    target = [[*map(int, input().split())] for _ in range(r)]
-    
-    mc = Counter([e for row in matrix for e in row])
-    tc = Counter([e for row in target for e in row])
+    mr = get_x(matrix)
 
-    if len(mc) != len(tc):
-        print("NIE")
-    
-    for k in tc:
-        if mc.get(k, -1) != tc[k]:
-            print("NIE")
-            break
+    matrix = [[*map(int, input().split())] for _ in range(r)]
+    tr = get_x(matrix)
+    flag = True
+    for m, t in zip(mr, tr):
+        check = {e: False for e in m}
+        for tmp in t:
+            if check.get(tmp, None) != None:
+                check[tmp] = True 
+        flag &= all(i for i in check.values())
+   
+    if flag:
+        print("TAK")
     else:
-        mr, mc = get_x(matrix)
-        tr, tc = get_x(matrix)
-        
-        if not(mr % r == tr % r and mc % c == tc % c):
-            print("NIE")
-        else:
-            print("TAK")
+        print("NIE")
+

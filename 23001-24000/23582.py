@@ -30,14 +30,17 @@ my = min(y0, y1)
 x = candidate(x0, y0)
 y = candidate(x1, y1)
 
+print(x, y)
 if x == y:
     print(0)
     exit(0)
 
-dx, dy = abs(y[0] - x[0]), abs(y[1] - x[1])
+dx, dy = y[0] - x[0], y[1] - x[1]
+print(dx, dy)
 
 kx, ky = 2*dx + dy, dx - 2*dy
 
+print(kx, ky)
 print(abs(kx//5) + abs(ky//5))
 
 

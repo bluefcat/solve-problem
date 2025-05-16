@@ -9,14 +9,15 @@ def mpow(x, e):
         e >>= 1
     return result
 
-def check(pos, n) -> bool:
-    result = 10
-    tmp = 110
-    for i in range(2, n+1):
-        result += i*tmp;
-        tmp *= 110
+def get_count(n):
+    result, s, e = 0, 0, 9
+    for i in range(0, n):
+        result += (i+1)*(e-s+1)
+        s, e = e+1, e*10+9 
+    return result
 
-    return pos < result
+def check(pos, n) -> bool:
+    return pos >= get_count(n)
 
 def main():
     while True:
@@ -24,45 +25,31 @@ def main():
         if n == 0 and k == 0:
             return 0
 
-        no, yes = 0, 10_000
-        while no + 1 < yes:
+        yes, no = 0, 10_000
+        while yes + 1 < no:
             mid = (yes + no) >> 1 
             if(check(n, mid)):
                 yes = mid
             else:
                 no = mid
+    
+        diff = n - get_count(yes)
+        idx = diff//(yes+1)
+        if yes != 0:
+            idx += mpow(10, yes)
 
-        cnt = 0 if (yes==1) else 10
-        tmp = 110 
-        for i in range(2, yes):
-            cnt += i*tmp
-            tmp *= 10
-
-        idx = (0 if (yes == 1) else mpow(10, yes-1)) + (n-cnt)//yes
-        offset = 0
-        if yes != 1:
-            offset = (n-cnt) % yes
-        buffer = f"{idx}"
-        i = offset
-        for x in buffer[offset:]:
-            print(x, end='')
-            i += 1
-            k -= 1 
-            if k == 0:
-                break 
-
+        tar = f"{idx}"[diff%(yes+1):]
+        i = 0
         while k != 0:
-            for ii in range(i, len(buffer)):
-                print(buffer[ii], end='')
-                k -= 1 
-                if k == 0:
-                    break 
+            print(tar[i] , end='')
+            i += 1
+            k -= 1
+            if(i == len(tar)):
+                i = 0 
+                idx += 1 
+                tar = f"{idx}"
 
-            i = 0 
-            idx += 1 
-            buffer = f"{idx}"
         print()
-
 main()
 
 

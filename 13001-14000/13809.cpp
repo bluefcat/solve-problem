@@ -43,6 +43,7 @@ int main(){
 			cnt += i*tmp; tmp *= 10;
 		}
 		lint idx = (yes==1?0:mpow(10, yes-1)) + (n-cnt)/yes;
+		printf("%lld\n", idx);
 		lint offset = (n-cnt) % yes;
 		std::string buffer = std::to_string(idx);
 		int i =0;

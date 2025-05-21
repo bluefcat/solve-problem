@@ -5,6 +5,7 @@ constexpr lint N = 1'000'001;
 lint arr[N];
 
 bool check(lint m, lint n, lint l){
+	if(l == 0) return false;
 	lint count = 0;
 	for(lint i = 0; i < n; i ++)
 		count += arr[i] / l;

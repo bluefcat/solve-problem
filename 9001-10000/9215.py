@@ -16,5 +16,7 @@ while n := int(input()):
     d, n = result.denominator, result.numerator
     if d >= n:
         print(f"Test {cnt}: {result}")
-    elif d < n:
+    elif n%d == 0:
+        print(f"Test {cnt}: {n//d}")
+    else:
         print(f"Test {cnt}: {n//d},{Fraction(n%d, d)}")

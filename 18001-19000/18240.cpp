@@ -34,7 +34,8 @@ int main(){
 
 	for(int i = 1; i < n; i ++){
 		int depth;
-		scanf("%d", &depth);
+		depth = i;
+		//scanf("%d", &depth);
 		std::queue<Node*> tmp{};
 		int de = -1;
 		while(!q.empty() && de != depth){
@@ -77,7 +78,7 @@ int main(){
 
 
 	for(int i = 0; i < n; i ++){
-		printf("%d ", arr[i]);
+		//printf("%d ", arr[i]);
 	}
 	printf("\n");
 

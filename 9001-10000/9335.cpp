@@ -12,20 +12,22 @@ bool all(int n, T& conditions){
 }
 
 
-template<typename T, typename P>
-int solution(T& network, P& cover, int n, int x){
+template<typename T, typename P, typename Q>
+int solution(T& network, P& set, Q& cover, int n, int x){
 	if(all(n, cover)) return x;
 	
 	int result = 21;
 
 	for(int i = 0; i < n; i ++){
-		if(cover[i] != 0) continue;
+		if(set[i]) continue;
 		
+		set[i] = true;
 		cover[i] ++;
 		for(auto& f: network[i]) cover[f] ++;
 
-		result = std::min(result, solution(network, cover, n, x+1));
+		result = std::min(result, solution(network, set, cover, n, x+1));
 
+		set[i] = false;
 		cover[i] --;
 		for(auto& f: network[i]) cover[f] --;
 	}
@@ -40,6 +42,7 @@ int main(){
 		int result = 21;
 
 		std::vector<int> network[N]{}; //[0, n)
+		bool set[N] = { false, };
 		int cover[N] = { 0, };
 
 		scanf("%d", &n);
@@ -53,7 +56,7 @@ int main(){
 			}
 		}
 
-		printf("%d\n", solution(network, cover, n, 0));
+		printf("%d\n", solution(network, set, cover, n, 0));
 
 	}
 	return 0;

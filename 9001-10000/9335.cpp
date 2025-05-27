@@ -11,39 +11,13 @@ bool all(int n, T& conditions){
 	return result;
 }
 
-
-template<typename T, typename P, typename Q>
-int solution(T& network, P& set, Q& cover, int n, int x){
-	if(all(n, cover)) return x;
-	
-	int result = 21;
-
-	for(int i = 0; i < n; i ++){
-		if(set[i]) continue;
-		
-		set[i] = true;
-		cover[i] ++;
-		for(auto& f: network[i]) cover[f] ++;
-
-		result = std::min(result, solution(network, set, cover, n, x+1));
-
-		set[i] = false;
-		cover[i] --;
-		for(auto& f: network[i]) cover[f] --;
-	}
-	return result;
-}
-
 int main(){
 	int t;
 	scanf("%d", &t);
 	while(t --){
 		int n;
-		int result = 21;
 
 		std::vector<int> network[N]{}; //[0, n)
-		bool set[N] = { false, };
-		int cover[N] = { 0, };
 
 		scanf("%d", &n);
 		for(int i = 0; i < n; i ++){
@@ -56,8 +30,23 @@ int main(){
 			}
 		}
 
-		printf("%d\n", solution(network, set, cover, n, 0));
+		int result = 0xFFFF;
+		for(int i = 0; i < (1 << (n+1)); i ++){
+			bool set[N] = { false, };
+			int tmp = 0;
+			for(int b = 0; b < n; b ++){
+				if(!((1 << b) & i)) continue;
 
+				set[b] = true;
+				for(auto& f: network[b]){
+					set[f] = true;
+				}
+				tmp ++;
+
+			}
+			if(all(n, set)) result = std::min(result, tmp);
+		}
+		printf("%d\n", result);
 	}
 	return 0;
 }

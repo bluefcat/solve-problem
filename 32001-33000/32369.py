@@ -1,10 +1,9 @@
 n, a, b = map(int, input().split())
-x, y = 1, 1
-for _ in range(n):
-    x, y = x+a, y+b
-    if x < y:
-        x, y = y, x 
-    elif x == y:
-        y -= 1 
-
-print(x, y)
+if a+1 == b:
+    print(b+a*(n-1)+1, b+a*(n-1))
+else:
+    p = (a+b)*(n//2)+b*(n%2)
+    if n & 1:
+        print(p, p-(b-a-1))
+    else:
+        print(p+1, p)

@@ -79,7 +79,7 @@ ulint pollard_rho(l128 n){
 
 lint S(lint p, lint e){
 	lint x = (lint)((mpow(p, (e+1)%M, M) - 1) % M);
-	lint y = (lint)(mpow((p - 1), M-2,  M));
+	lint y = (lint)(mpow((p - 1), M-2, M));
 	return (x * y) % M;
 }
 

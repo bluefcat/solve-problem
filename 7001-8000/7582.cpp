@@ -8,8 +8,7 @@ int main(){
 	for(int i = 0; i < s; i ++){
 		int l, b;
 		scanf("%d %d", &l, &b);
-		p = std::max(0, p-l);
-		p = std::min(capa, p+b);
+		p = std::max(0, std::min(capa, p-l+b));
 	}
 	char x, y;
 	scanf("%c %c", &x, &y);

@@ -4,7 +4,7 @@ constexpr int N = 200'001;
 constexpr int P = 500'000;
 
 int arr[N];
-bool prime[P];
+int prime[P];
 
 void build_sieve(){
 	for(int i = 0; i < P; i ++) prime[i] = true;
@@ -23,6 +23,13 @@ void build_sieve(){
 	}
 }
 
+bool is_prime(int i){
+	if(i == 1) return false;
+	if(i == 2) return true;
+	if(i % 2 == 0) return false;
+	return prime[(i-3) >> 1];
+}
+
 int main(){
 	build_sieve();
 	int n;
@@ -30,15 +37,18 @@ int main(){
 	for(int i = 0; i < n; i ++) scanf("%d", arr+i);
 	
 	bool flag = true;
-	int one = 0, comp = 0;
-	for(int i = 0; i < n-1; i ++){
-		flag &= (arr[i] <= arr[i+1]);
+	for(int i = 0; i < n; i ++){
+		if(i < n-1){
+			flag &= (arr[i] <= arr[i+1]);
+			if(is_prime(arr[i]) && is_prime(arr[i+1])){
+				flag = true;
+				break;
+			}
+		}
 
-		one += arr[i] == 1;
-		if(arr[i] > 2 && arr[i] % 2 == 0)
-			comp += 1;
-		else if(arr[i] > 2){
-			comp += !prime[(arr[i]-3)/2];
+		if(arr[i] != 1 && !is_prime(arr[i])){
+			flag = true;
+			break;
 		}
 	}
 
@@ -47,11 +57,6 @@ int main(){
 		return 0;
 	}	
 
-	if(one == 0 || one <= comp){
-		printf("YES\n");
-		return 0;
-	}
 	printf("NO\n");
-
 	return 0;
 }

@@ -13,7 +13,6 @@ def merge(left, right, key):
     while k:
         yield k.popleft()
 
-
 o, h = deque(), deque()
 
 _ = input()
@@ -21,21 +20,22 @@ target = input().strip()
 
 for i, x in enumerate(target):
     if x == 'H':
-        h.append((i, x))
+        h.append((i, i, x))
 
     elif x == 'O':
         if h:
-            h.popleft()
-            o.append((i, 'K'))
+            l, *_ = h.popleft()
+            o.append((l, i, 'K'))
         else:
-            o.append((i, 'O'))
+            o.append((i, i, 'O'))
 
 s = []
-for x in merge(o, h, key=lambda x: x[0]):
-    if s and s[-1] == 'K' and x[-1] == 'H':
+for x in merge(o, h, key=lambda x: x[1]):
+    if s and s[-1][-1] == 'K' and x[-1] == 'H':
+        print(s[-1], x)
         s.pop()
     else:
-        s.append(x[-1])
+        s.append(x)
 
 if s:
     print("mix")

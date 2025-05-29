@@ -1,16 +1,8 @@
-import sys 
-input = sys.stdin.readline 
-
-def f(oper,p,q='0',r='0'):
-    p,q,r=map(lambda x:bin(int(x))[2:], [p,q,r])
-    opers=["ADD","SUB","MOV","AND","OR","NOT","MULT","LSFTL","LSFTR","ASFTR","RL","RR"]
-    c = 'C'in oper; 
-    if c: 
-        oper=oper[:-1]
-        r=f"{r:0>4}"
-    else:
-        r=f"{r:0>3}"
-    print(f"{bin(opers.index(oper))[2:]:0>4}{+c}0{p:0>3}{q:0>3}{r:0<4}")
-
-
-_ = [f(*x.split()) for x in [*map(str,open(0))][1:]]
+def f(o,p,q,r):
+    c='C'in o
+    s="ADDSUBMOVANDORRNOTMUTLSLLSRASRRLLRRR"
+    o=s.find(o[:2]+o[-(1+c)])/3
+    o,p,q,r=map(lambda x:f"{bin(int(x))[2:]:0>3}",[o,p,q,r])
+    r=f"{r:0>{3+c}}"
+    print(f"{o:0>4}{+c}0{p}{q}{r:0<4}")
+[f(*x.split())for x in[*open(0)][1:]]

@@ -33,9 +33,9 @@ def processing(query, cur, arr):
 
     match oper:
         case 1:
-            result = (result * fact(narr)) % MOD
+            return fact(narr) % MOD
         case 2:
-            result = (result * processing(query, cur+1, arr)) % MOD
+            return  processing(query, cur+1, arr) % MOD
     return result
 
 n, q = map(int, input().split())

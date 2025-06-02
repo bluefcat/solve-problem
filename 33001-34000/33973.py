@@ -18,25 +18,29 @@ def processing(query, cur, arr):
     
     oper, idx = query[cur]
     tmp = {}
-    for x in arr:
-        tmp[x[idx-1]] = tmp.get(x[idx-1], []) + [x]
+    for i, x in enumerate(arr):
+        tmp[x[0][idx-1]] = tmp.get(x[0][idx-1], []) + [i]
 
-    narr = []
+    narr = 0
     for v in tmp.values():
+        if len(v) == 1:
+            arr[v[0]][1] = True
         if len(v) > 1:
-            narr.extend(v)
+            for i in v:
+                narr += (not arr[i][1])
     
+    arr = sorted(arr, key=lambda x: x[0][idx-1])
+
     match oper:
         case 1:
-            result = (result * fact(len(narr))) % MOD
+            result = (result * fact(narr)) % MOD
         case 2:
-            result = (result * processing(query, cur+1, narr)) % MOD
+            result = (result * processing(query, cur+1, arr)) % MOD
     return result
 
 n, q = map(int, input().split())
-#arr = [[1 for _ in range(2000)] for _ in range(2000)]
-#tmp = [[1, 1]] +  [[2, 1] for _ in range(1999)]
 arr = [[*map(int, input().split())] for _ in range(n)]
+arr = [[x, False] for x in arr]
 tmp = [[*map(int, input().split())] for _ in range(q)]
 query = []
 for oper, idx in reversed(tmp):

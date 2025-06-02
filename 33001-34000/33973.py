@@ -11,12 +11,11 @@ sys.setrecursionlimit(3000)
 
 input = sys.stdin.readline 
 
-def processing(query, cur, arr):
-    result = 1
-    if len(query) == cur:
-        return result
+def processing(query, arr):
+    if not query:
+        return 1
     
-    oper, idx = query[cur]
+    oper, idx = query[0]
     tmp = {}
     for i, x in enumerate(arr):
         tmp[x[0][idx-1]] = tmp.get(x[0][idx-1], []) + [i]
@@ -35,8 +34,7 @@ def processing(query, cur, arr):
         case 1:
             return fact(narr) % MOD
         case 2:
-            return  processing(query, cur+1, arr) % MOD
-    return result
+            return processing(query[1:], arr) % MOD
 
 n, q = map(int, input().split())
 arr = [[*map(int, input().split())] for _ in range(n)]
@@ -44,10 +42,7 @@ arr = [[x, False] for x in arr]
 tmp = [[*map(int, input().split())] for _ in range(q)]
 query = []
 for oper, idx in reversed(tmp):
-    if oper == 1:
-        query.append((oper, idx))
-        break
     query.append((oper, idx))
 
-print(processing(query, 0, arr))
+print(processing(query, arr))
 

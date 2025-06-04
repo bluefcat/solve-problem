@@ -2,7 +2,7 @@
 #include <cmath>
 #include <vector>
 
-using lint = long long;
+using lint = __int128;
 constexpr int P = 10'000'000;
 bool is_prime[P] = { false, };
 std::vector<lint> prime;
@@ -24,14 +24,14 @@ void build_sieve(){
 
 int main(){
 	build_sieve();
-	lint a, b;
+	long long a, b;
 	scanf("%lld %lld", &a, &b);
-	lint result = 0;
+	long long result = 0;
 	for(lint p = 2; p < P; p ++){
 		if(!is_prime[p]) continue;
-		for(lint q = p*p; q < b; q *= p){
+		for(lint q = p*p; q <= b; q *= p)
 			result += (a <= q && q <= b);
-		}
+		
 	}
 
 	printf("%lld\n", result);

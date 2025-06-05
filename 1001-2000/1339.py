@@ -7,8 +7,8 @@ n = sorted(
 mask = {chr(k): -1 for k in range(ord('A'), ord('A')+10)}
 app = {chr(k): 0 for k in range(ord('A'), ord('A')+10)}
 for x in n:
-    for w in x:
-        app[w] += 1
+    for i, w in enumerate(x):
+        app[w] += 1*(10**i)
 
 
 c = []
@@ -37,6 +37,5 @@ for cnt in reversed(c):
         mask[t] = cand 
         cand -= 1
         cnt[t]=0
-
 print(sum(sum(mask[w] * (10**i) for i, w in enumerate(x)) for x in n))
 

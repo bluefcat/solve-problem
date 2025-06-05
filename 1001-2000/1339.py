@@ -5,6 +5,12 @@ n = sorted(
 )
 
 mask = {chr(k): -1 for k in range(ord('A'), ord('A')+10)}
+app = {chr(k): 0 for k in range(ord('A'), ord('A')+10)}
+for x in n:
+    for w in x:
+        app[w] += 1
+
+
 c = []
 for i, _ in enumerate(max(n, key=lambda x: len(x))):
     tmp = Counter([s[i] for s in n if len(s) > i])
@@ -14,7 +20,15 @@ cand = 9
 
 for cnt in reversed(c):
     while True:
-        t = max(cnt, key=lambda x: cnt[x])
+        p, pc = [], 0
+        for k, v in cnt.items():
+            if pc < v:
+                p, pc = [k], v
+            elif pc == v:
+                p.append(k)
+        
+        t = max(p, key=lambda x:app[x])
+
         if cnt[t] == 0:
             break
         if mask[t] != -1:

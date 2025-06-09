@@ -1,7 +1,5 @@
 #include <cstdio>
-#include <vector>
 
-using std::vector;
 using lint = __int128;
 
 const lint A = 130'851, B = 45, P = (A << B) | 1, R = 5; 
@@ -25,36 +23,46 @@ lint pow(lint x, lint e, lint mod = P){
 	return result;
 }
 
-constexpr lint size = ((lint)1 << 25);	
+constexpr lint size = ((lint)1 << 23);	
+lint R1 = pow(R, P-2);
+lint ip = pow(size, P-2);
 void ntt(lint* f, bool inv = false){
 	lint n = size;
 	if(n == 1) return;
 
 	for(lint i = 1, j = 0; i < n; i ++){
-		lint bit = n >> 1;
-		for(;j&bit; bit >>= 1) j^=bit;
-		j ^= bit;
+		lint k = n >> 1;
+		for(; j>= k; k >>= 1) j -= k;
+		j += k;
 
-		if(i < j) std::swap(f[i], f[j]);
+		if(i < j){
+			lint tmp = f[i];
+			f[i] = f[j];
+			f[j] = tmp;
+		}
 	}
 
 	for(lint k = 1; k < n; k <<= 1){
-		lint w = pow(inv?pow(R,P-2):R, P / k >> 1);
+		lint w = pow(inv?R1:R, P / k >> 1);
 
 		for(lint i = 0; i < n; i += (k << 1)){
 			lint wi=1;
 
 			for(lint j = 0; j < k; j ++){
-				lint even = f[i+j];
-				lint odd = (f[i+j+k] * wi) % P;
-				f[i+j] = (even + odd) % P;
-				f[i+j+k] = (even - odd + P) % P; 
+				//lint even = f[i+j];
+				//lint odd = (f[i+j+k] * wi) % P;
+				//f[i+j] = (even + odd) % P;
+				//f[i+j+k] = (even - odd + P) % P; 
+				lint odd = (f[k|i|j] * wi) % P;
+				f[k|i|j] = f[i|j] - odd;
+				if(f[k|i|j] < 0) f[k|i|j] += P;
+				f[i|j] += odd;
+				if(f[i|j] >= P) f[i|j] -= P; 
 				wi = (wi*w) % P;
 			}
 		}
 	}
 	if(inv){
-		lint ip = pow(n, P-2);
 		//M^-1 = 1/n * (M that w has negative angle)
 		for(lint i = 0; i < n; i ++)
 			f[i] = (f[i] * ip) % P;
@@ -75,19 +83,14 @@ lint q[size];
 
 int main(){
 	long long n, m;
-	//n = 1; 1'000'000;
-	//m = 1; 1'000'000;
-
 	scanf("%lld %lld", &n, &m);
 	for(lint i = 0; i < n+1; i ++){
 		int x;
-		//x = 1'000'000;
 		scanf("%d", &x);
 		p[i] = (lint)x;
 	}
 	for(lint i = 0; i < m+1; i ++){
 		int x;
-		//x = 1'000'000;
 		scanf("%d", &x);
 		q[i] = (lint)x;
 	}

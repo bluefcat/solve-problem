@@ -4,8 +4,8 @@
 using std::vector;
 using lint = __int128;
 
-//3'221'225'473
-//const lint A = 3, B = 30, P = (A << B) | 1, R = 5; 
+const lint A = 130'851, B = 45, P = (A << B) | 1, R = 5; 
+
 //2'281'701'377
 //const lint A = 17, B = 27, P = (A << B) | 1, R = 3; 
 //2'013'265'921
@@ -13,7 +13,7 @@ using lint = __int128;
 //469'762'049
 //const lint A = 7, B = 26, P = (A << B) | 1, R = 3; 
 //998'244'353
-const lint A = 119, B = 23, P = (A << B) | 1, R = 3;
+//const lint A = 119, B = 23, P = (A << B) | 1, R = 3;
 
 lint pow(lint x, lint e, lint mod = P){
 	lint result = 1;

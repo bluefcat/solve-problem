@@ -2,7 +2,7 @@
 #include <vector>
 
 using std::vector;
-using lint = long long;
+using lint = __int128;
 
 //3'221'225'473
 //const lint A = 3, B = 30, P = (A << B) | 1, R = 5; 
@@ -60,7 +60,7 @@ void ntt(vector<lint>& f, bool inv = false){
 	}
 }
 
-void print(__int128 x){
+void print(lint x){
 	if(x < 0){
 		putchar('-');
 		x = -x;
@@ -70,16 +70,16 @@ void print(__int128 x){
 }
 
 int main(){
-	int size = (1 << 20);	
+	lint size = (1 << 20);	
 	vector<lint> p(size, 0), q(size, 0);
 	int n, m;
 	scanf("%d %d", &n, &m);
-	for(int i = 0; i < n+1; i ++){
+	for(lint i = 0; i < n+1; i ++){
 		int x;
 		scanf("%d", &x);
 		p[i] = x;
 	}
-	for(int i = 0; i < m+1; i ++){
+	for(lint i = 0; i < m+1; i ++){
 		int x;
 		scanf("%d", &x);
 		q[i] = x;
@@ -87,12 +87,12 @@ int main(){
 	
 	ntt(p, false);
 	ntt(q, false);
-	for(int i = 0; i < size; i ++) p[i] = (p[i] * q[i]) % P;
+	for(lint i = 0; i < size; i ++) p[i] = (p[i] * q[i]) % P;
 	ntt(p, true);
 	
-	__int128 result = 0;
+	lint result = 0;
 
-	for(int i = 0; i < (n+1)*(m+1); i ++){
+	for(lint i = 0; i < (n+1)*(m+1); i ++){
 		result ^= p[i];
 	}
 	print(result);

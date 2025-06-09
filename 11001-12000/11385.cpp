@@ -25,8 +25,9 @@ lint pow(lint x, lint e, lint mod = P){
 	return result;
 }
 
-void ntt(vector<lint>& f, bool inv = false){
-	lint n = f.size();
+constexpr lint size = ((lint)1 << 25);	
+void ntt(lint* f, bool inv = false){
+	lint n = size;
 	if(n == 1) return;
 
 	for(lint i = 1, j = 0; i < n; i ++){
@@ -55,8 +56,8 @@ void ntt(vector<lint>& f, bool inv = false){
 	if(inv){
 		lint ip = pow(n, P-2);
 		//M^-1 = 1/n * (M that w has negative angle)
-		for(lint& x: f)
-			x = (x * ip) % P;
+		for(lint i = 0; i < n; i ++)
+			f[i] = (f[i] * ip) % P;
 	}
 }
 
@@ -69,20 +70,26 @@ void print(lint x){
 	putchar(x % 10 + '0');
 }
 
+lint p[size];
+lint q[size];
+
 int main(){
-	lint size = (1 << 20);	
-	vector<lint> p(size, 0), q(size, 0);
-	int n, m;
-	scanf("%d %d", &n, &m);
+	long long n, m;
+	//n = 1; 1'000'000;
+	//m = 1; 1'000'000;
+
+	scanf("%lld %lld", &n, &m);
 	for(lint i = 0; i < n+1; i ++){
 		int x;
+		//x = 1'000'000;
 		scanf("%d", &x);
-		p[i] = x;
+		p[i] = (lint)x;
 	}
 	for(lint i = 0; i < m+1; i ++){
 		int x;
+		//x = 1'000'000;
 		scanf("%d", &x);
-		q[i] = x;
+		q[i] = (lint)x;
 	}
 	
 	ntt(p, false);

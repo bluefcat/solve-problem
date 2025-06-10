@@ -1,5 +1,5 @@
 _,m=map(int,input().split())
-a=sorted([x for x in map(int,input().split())])
+a=[x for x in map(int,input().split())]
 r=0
 while True:
     a=[x for x in a if x >= 10]
@@ -15,11 +15,10 @@ while True:
         break
 
     if a:
-        a[0] = a[0]-10
+        i = a.index(min(a, key=lambda x: (x%10,x)))
+        a[i] = a[i]-10
         m-=1 
         r+=1
 
-
 print(r)
-
 

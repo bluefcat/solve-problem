@@ -1,5 +1,5 @@
 _,m=map(int,input().split())
-a=[x for x in map(int,input().split())]
+a=sorted([x for x in map(int,input().split())])
 r=0
 while True:
     a=[x for x in a if x >= 10]

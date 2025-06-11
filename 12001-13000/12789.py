@@ -9,8 +9,13 @@ while x:
         s.pop()
         t+=1
     else:
-        s+=[x[-1]]
-        x.pop()
+        s+=[x.pop()]
+
+while s:
+    if s[-1] != t:
+        break 
+    t+=1
+    s.pop()
 
 if s:
     print("Sad")

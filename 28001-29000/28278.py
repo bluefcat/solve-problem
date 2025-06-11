@@ -6,6 +6,6 @@ f={
     5:lambda k:print(k and k[0]or -1),
 }
 s=[]
-for _ in '*'*int(input()):
-    k,*v=map(int,input().split())
+for x in [*open(0)][1:]:
+    k,*v=map(int,x.split())
     f[k](s,*v)

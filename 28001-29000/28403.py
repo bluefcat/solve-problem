@@ -2,12 +2,13 @@ import sys
 input = sys.stdin.readline 
 
 def get_result(arr, s = 0, p = 0, k = 0):
-    if len(arr) <= s+k-1:
-        return 0
-    if arr[s+k-1]-p == k:
-        return 1
-    return 1+get_result(arr, s+k, arr[s+k-1], k-(arr[s+k-1]-p))
-
+    result = 0
+    while len(arr) > s+k-1:
+        if arr[s+k-1]-p == k:
+            return result+1
+        result += 1 
+        s, k, p = s+k, k-(arr[s+k-1]-p), arr[s+k-1] 
+    return result
 
 _ = input() 
 deck = [*input().strip()]

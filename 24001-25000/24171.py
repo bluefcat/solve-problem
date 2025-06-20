@@ -5,8 +5,6 @@ class Field:
         x = gcd(a, b, c)
         if a < 0:
             a, b, c = -a, -b, -c
-        if c == 0 or d == 0:
-            c, d = 0, 0
         self.a, self.b, self.c, self.d = a//x, b//x, c//x, d  
 
     def __neg__(self):
@@ -44,7 +42,10 @@ class Field:
         )
 
     def __repr__(self):
-        return f"{self.a} {self.b} {self.c} {self.d}"
+        c,d =self.c, self.d
+        if c == 0 or d == 0:
+            c, d = 0, 0
+        return f"{self.a} {self.b} {c} {d}"
 
 class Complex:
     def __init__(self, a, b):
@@ -57,8 +58,8 @@ class Complex:
         return Complex(self.a-other.a, self.b-other.b)
     
     def __mul__(self, other):
-        a,b,c,d=self.a,self.b,other.a,other.b
-        return Complex(a*c-b*d, a*d+b*c)
+        p,q,r,s=self.a,self.b,other.a,other.b
+        return Complex((p*r)-(q*s), r*q+s*p)
 
     def __truediv__(self, other):
         a,b=other.a,other.b

@@ -1,88 +1,119 @@
 #include <cstdio>
-#include <cmath>
 #include <unordered_map>
 
+using std::unordered_map;
 using lint = long long;
-constexpr int N = 1'000'000;
 
-struct Bucket{
-	lint l = N+1, r = 0;
-	bool f = false;
-	std::unordered_map<lint, lint> cnt{};
-};
+constexpr int N = 200'001;
+constexpr int get_left(int idx){
+	return (idx << 1) + 1;
+}
+constexpr int get_right(int idx){
+	return (idx << 1) + 2;
+}
 
-lint arr[N] = { 0, };
-Bucket bucket[N] = {};
+lint arr[N];
+unordered_map<lint, lint> tree[4*N+4];
 
-int main(){
-	lint n;
-	scanf("%lld", &n);
-	for(lint i = 0; i < n; i ++) scanf("%lld", arr+i);
-	
-	lint sn = std::sqrt(n);
-	for(lint i = 0; i < n; i ++){
-		bucket[i/sn].l = std::min(bucket[i/sn].l, i);
-		bucket[i/sn].r = std::max(bucket[i/sn].r, i);
-		bucket[i/sn].cnt[arr[i]] ++;
+auto& init(int l, int r, int idx){
+	if(l == r){
+		tree[idx][arr[l]] = 1;
+		return tree[idx];
 	}
 	
-	lint q;
-	scanf("%lld", &q);
+	int m = (l+r) >> 1;
+
+	auto& lr = init(l, m, get_left(idx));
+	auto& rr = init(m+1, r, get_right(idx));
+	for(auto &[k, v]: lr)
+		tree[idx][k] += v;
 	
+	for(auto &[k, v]: rr)
+		tree[idx][k] += v;
+
+	return tree[idx];
+
+}
+
+void propagate(int l, int r, int idx){
+	if(tree[idx][-1] == 0) return;
+	if(l != r){
+		//update query
+		tree[get_left(idx)][-1]  = tree[idx][-1];
+		tree[get_right(idx)][-1] = tree[idx][-1];
+	}
+	tree[idx].clear();
+}
+
+auto& update(int l, int r, int s, int e, int idx){
+	propagate(l, r, idx);
+	if(r < s || e < l) return tree[idx];
+	if(s <= l && r <= e){
+		tree[idx][-1] = 1;
+		propagate(l, r, idx);
+		return tree[idx];
+	}
+	int m = (l + r) >> 1;
+	auto& lr = update(l, m, s, e, get_left(idx));
+	auto& rr = update(m+1, r, s, e, get_right(idx));
+	tree[idx].clear();
+	for(auto &[k, v]: lr)
+		tree[idx][k] += v;
+	
+	for(auto &[k, v]: rr)
+		tree[idx][k] += v;
+
+	return tree[idx];
+}
+
+auto query(int l, int r, int s, int e, int idx){
+	propagate(l, r, idx);
+	if(r < s || e < l) return unordered_map<lint, lint>{};
+	if(s <= l && r <= e) return tree[idx];
+	int m = (l + r) >> 1;
+
+	auto lr = query(l, m, s, e, get_left(idx));
+	auto rr = query(m+1, r, s, e, get_right(idx));
+
+	unordered_map<lint, lint> result{};
+	
+	for(auto &[k, v]: lr)
+		result[k] += v;
+	
+	for(auto &[k, v]: rr)
+		result[k] += v;
+	return result;
+}
+
+int main(){
+	int n;
+	scanf("%d", &n);
+	for(int i = 0; i < n; i ++){
+		scanf("%lld", arr+i);
+	}
+
+	init(0, n-1, 0);
+
+	int q;
+	scanf("%d", &q);
 	while(q--){
-		lint oper, l, r, k, result = 0;
-		scanf("%lld", &oper);
+		int oper, l, r, k;
+		scanf("%d", &oper);
 		switch(oper){
 			case 1:
-				{
-					scanf("%lld %lld %lld", &l, &r, &k);
-					l--; r--;
-					while(l % sn != 0 && l <= r){
-						if(bucket[l/sn].f){ 
-							l++;
-							continue;
-						}
-						result += (arr[l++] == k);
-					}
-					while((r+1) % sn != 0 && l <= r){
-						if(bucket[r/sn].f){
-							r --;
-							continue;
-						}
-						result += (arr[r--] == k);
-					}
-
-					while(l <= r){
-						result += bucket[l/sn].cnt[k];
-						l += sn;
-					}
-
-					printf("%lld\n", result);
-					break;
-				}
+				scanf("%d %d %d", &l, &r, &k);
+				l--; r--;
+				printf("%lld\n", query(0, n-1, l, r, 0)[k]);
+			break;
 			case 2:
-				{
-					scanf("%lld %lld", &l, &r);
-					l--; r--;
-					while(l % sn != 0 && l <= r){
-						bucket[l/sn].cnt[arr[l]] --;
-						arr[l++] = 0;
-					}
-					while((r+1) % sn != 0 && l <= r){
-						bucket[r/sn].cnt[arr[r]] --;
-						arr[r--] = 0;
-
-					}
-					while(l <= r){
-						bucket[l/sn].cnt.clear();
-						bucket[l/sn].f = true;
-						l += sn;
-					}
-				break;
-			}
+				scanf("%d %d", &l, &r);
+				l--; r--;
+				update(0, n-1, l, r, 0);
+			break;
 		}
 	}
 
 	return 0;
 }
+
 

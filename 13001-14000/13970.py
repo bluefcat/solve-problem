@@ -1,6 +1,6 @@
 import sys;input=sys.stdin.readline 
 
-LIMIT: int = 1_000_000
+LIMIT: int = 1_000_007
 class phi:
     def __new__(cls, x):
         if not hasattr(cls, "_instance"):
@@ -28,7 +28,7 @@ def tower(arr, i, m):
 
     if e < phi(m):
         return pow(x, e)
-    return pow(x, e, m) + m
+    return pow(x, e % phi(m) + phi(m))
 
 phi(0)
 t, m = map(int, input().split())

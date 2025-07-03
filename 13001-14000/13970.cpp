@@ -1,7 +1,7 @@
 #include <cstdio>
 
 using lint = __int128;
-constexpr lint LIMIT = 1'000'000;
+constexpr lint LIMIT = 1'000'007;
 constexpr int N = 1'001;
 
 class phi{
@@ -28,19 +28,11 @@ public:
 
 phi* phi::_instance = nullptr;
 
-lint mpow(lint x, lint e, lint m = -1){
+lint mpow(lint x, lint e){
 	lint result = 1;
-	if(m == -1){
-		while(e){
-			if(e & 1) result *= x;
-			x *= x;
-			e >>= 1;
-		}
-		return result;
-	}
 	while(e){
-		if(e & 1) result = (result * x) % m;
-		x = (x * x) % m;
+		if(e & 1) result *= x;
+		x *= x;
 		e >>= 1;
 	}
 	return result;
@@ -50,12 +42,21 @@ lint tower(lint* arr, lint n, lint i, lint m){
 	if(m == 1) return 1;
 	if(n == i) return arr[i];
 
-	lint x = mpow(arr[i], tower(arr, n, i+1, phi::get(m)));
-	if(x < phi::get(m)) return x;
-	return (x % m) + m;
+	lint x = arr[i];
+	lint e = tower(arr, n, i+1, phi::get(m));
+
+	if(e < phi::get(m)) return mpow(x, e);
+	return mpow(x, e % phi::get(m) + phi::get(m));
 }
 
-
+void print(__int128 x) {
+    if (x < 0) {
+        putchar('-');
+        x = -x;
+    }
+    if (x > 9) print(x / 10);
+    putchar(x % 10 + '0');
+}
 
 int main(){
 	lint arr[N];
@@ -68,11 +69,8 @@ int main(){
 			scanf("%lld", &tmp);
 			arr[i] = (lint)tmp;
 		}
-		lint e = 1;
-		if(n >= 2) 
-			e = tower(arr,n-1,1,m);
-		printf("%lld, ", (long long)e);
-		printf("%lld\n", (long long)mpow(arr[0], e) % m);
+		print(tower(arr, n-1, 0, m) % m);
+		printf("\n");
 	}
 
 

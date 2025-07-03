@@ -33,5 +33,8 @@ phi(0)
 t, m = map(int, input().split())
 for _ in range(t):
     x, *arr = map(int, input().split())
-    print(tower(arr, 0, m) % m)
+    e = 1
+    if len(arr) > 1:
+        e= tower(arr, 1, phi(m))
+    print(pow(arr[0], e, m))
 

@@ -34,6 +34,5 @@ phi(0)
 t, m = map(int, input().split())
 for _ in range(t):
     x, *arr = map(int, input().split())
-    e = 1
     print(tower(arr, 0, m) % m)
 

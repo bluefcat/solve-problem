@@ -1,6 +1,6 @@
-from itertools import permutations 
+from itertools import product
 
 n, m = map(int, input().split())
-arr = [*map(int, input().split())]*n
-for x in sorted([*set(x for x in permutations(arr, r=m))]):
+arr = [*map(int, input().split())]
+for x in sorted([*set(x for x in product(arr, repeat=m))]):
     print(*x)

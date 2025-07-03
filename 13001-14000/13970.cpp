@@ -49,6 +49,20 @@ lint tower(lint* arr, lint n, lint i, lint m){
 	return mpow(x, e % phi::get(m) + phi::get(m));
 }
 
+__int128 read() {
+    __int128 x = 0, f = 1;
+    char ch = getchar();
+    while (ch < '0' || ch > '9') {
+        if (ch == '-') f = -1;
+        ch = getchar();
+    }
+    while (ch >= '0' && ch <= '9') {
+        x = x * 10 + ch - '0';
+        ch = getchar();
+    }
+    return x * f;
+}
+
 void print(__int128 x) {
     if (x < 0) {
         putchar('-');
@@ -65,9 +79,7 @@ int main(){
 	while(t--){
 		int n; scanf("%d", &n);
 		for(int i = 0; i < n; i ++){
-			long long tmp;
-			scanf("%lld", &tmp);
-			arr[i] = (lint)tmp;
+			arr[i] = read();
 		}
 		print(tower(arr, n-1, 0, m) % m);
 		printf("\n");

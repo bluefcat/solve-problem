@@ -1,22 +1,23 @@
 _ = input()
-arr = [*map(int, input().split())]
+arr = sorted([*map(int, input().split())])
 k = int(input())
 r = 0
 
 def sum_n(n, p, k):
     count = {x: 0 for x in p}
-    c = [x for x in p]
     
     while True:
-        count[c[0]] += 1
-        for x,y in zip(c, c[1:]):
+        count[p[0]] += 1
+        for x,y in zip(p, p[1:]):
             if count[x] > k:
                 count[x] = 0
                 count[y] += 1
+            if y > n:
+                break
             else:
                 break
 
-        if count[c[-1]] >= k + 1:
+        if count[p[-1]] >= k + 1:
             return None
         
         if sum(count.values()) > k:

@@ -1,41 +1,22 @@
+F = 500501*50
+cache = [0 for _ in range(F)]
 _ = input()
-arr = sorted([*map(int, input().split())])
+arr = [*map(int, input().split())]
 k = int(input())
 r = 0
 
-def sum_n(n, p, k):
-    count = {x: 0 for x in p}
-    
-    while True:
-        count[p[0]] += 1
-        for x,y in zip(p, p[1:]):
-            if count[x] > k:
-                count[x] = 0
-                count[y] += 1
-            if y > n:
-                break
-            else:
-                break
+cache[0] = 0
+for i in range(1, F):
+    for x in arr:
+        if i-x < 0:
+            continue
+        if cache[i] == 0:
+            cache[i] = cache[i-x]+1
+        cache[i] = min(cache[i-x]+1, cache[i])
+    r = i
+    if cache[i] > k:
+        break
 
-        if count[p[-1]] >= k + 1:
-            return None
-        
-        if sum(count.values()) > k:
-            continue 
 
-        if n == sum(k*v for k, v in count.items()):
-            return count
-
-    
-
-def find(p, k):
-    n = 1
-
-    while sum_n(n, p, k):
-        n += 1
-    
-    return n
-
-ans = find(arr, k)
-winner = "holsoon" if k & 1 else "jjaksoon"
-print(f"{winner} win at {ans}")
+winner = "jjaksoon" if r & 1 else "holsoon"
+print(f"{winner} win at {r}")

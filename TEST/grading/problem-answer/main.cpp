@@ -21,11 +21,11 @@ static std::map<std::string, std::string> options{
 
 
 int main(int argc, char* argv[]){
-    /*
-    options
-        --range-format string/ path
-        --problem-id   string/ 
-    */
+    
+    //options
+    //    --range-format string/ path
+    //    --problem-id   string/ 
+    
 
     //옵션 파싱
     int option_index = 0;
@@ -41,10 +41,10 @@ int main(int argc, char* argv[]){
 
     return 0;
 }
-
 /*
+
 int main(){
-    parsing("./package/2166.range");
+    parsing("./package/7576.range");
 
     std::cout << *gene_result["N"] << std::endl;
 

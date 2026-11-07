@@ -60,7 +60,7 @@ int main(){
 
 	for(int i = 0; i < product(dim); i ++){
 		int tmp;
-		scanf(" %d", &tmp);
+		scanf("%d", &tmp);
 		cache[i] = tmp;
 		if(cache[i] == 1) push(i, 0);
 	}
@@ -83,12 +83,18 @@ int main(){
 		}
 
 	}
-	
+		
 	for(int i = 0; i < product(dim); i ++){
 		printf("%d ", cache[i]);
 	}
 
-	//for(int i = 0; i < product(dim); i ++) if(cache[i] == 0) result = -1;
+	for(int i = 0; i < product(dim); i ++){
+		if(cache[i] == 0){
+			result = -1;
+			break;
+		} 
+	}
+	
 	printf("%d\n", result);
 
 	return 0;

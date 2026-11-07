@@ -1,41 +1,35 @@
 #include <stdio.h>
+#include <string.h>
 #include <limits.h>
+
 #define MAXLEN 501
 #define MIN(X, Y) ((X) > (Y)? (Y): (X))
 
-unsigned int matrix[MAXLEN][2];
-unsigned int cache[MAXLEN][MAXLEN];
-
 int main(){
+	int n;
+	unsigned int matrix[MAXLEN][2];
+	unsigned int cache[MAXLEN][MAXLEN];
 	
-	unsigned int tmp; 
-	int n = 0;
+	memset(matrix, 0, sizeof(matrix));
+	memset(cache, 0, sizeof(cache));
+	
 	scanf("%d", &n);
-	for(int i = 1; i <= n; i ++){
-		scanf("%u %u", matrix[i], matrix[i]+1);
-		cache[i][i] = matrix[i][0] * matrix[i][1];
-	}
 
-	for(int x = 1; x <= n; x ++){
-		for(int d = 1; d < x; d ++){
-			int y = x - d;
-			cache[x][y] = INT_MAX;
-			
-			int t = d+1;
-			for(int i = 1; i <= d; i ++){
-				unsigned int tmp = cache[x-i][y] * matrix[y+(t-i)][1];
-				
-				cache[x][y] = MIN(tmp, cache[x][y]);
+	for(int i = 0 ; i < n; i ++) scanf("%d %d", matrix[i] + 0, matrix[i] + 1);
+	
+	for(int i = 0; i < n; i ++)
+		for(int j = 0; i + j < n; j ++){
+			cache[i][i+j] = INT_MAX;
+			for(int m = i; m < i + j; m ++){
+				unsigned int count = matrix[i][0] * matrix[m][1] * matrix[j][1];
+				cache[i][j] = MIN(cache[i][j], cache[i][m] + cache[m+1][j] + count);
 			}
 		}
-	}
 
-	for(int i = 0; i <= n; i ++){
-		for(int j = 0; j <= n; j ++) printf("%10u\t", cache[i][j]);
+	for(int i = 0; i < n; i ++){
+		for(int j = 0; j < n; j ++) printf("%d ", cache[i][j]);
 		printf("\n");
 	}
-	
-	
-
+	printf("%d\n", cache[0][n-1]); 
 	return 0;
 }
